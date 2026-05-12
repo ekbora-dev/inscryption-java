@@ -1,4 +1,4 @@
-package Carte;
+package typeCarte;
 
 public abstract class Animal {
 }
