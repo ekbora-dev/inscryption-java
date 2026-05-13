@@ -16,4 +16,31 @@ public abstract class Animal {
         m_os = os;
         m_volant = volant;
     }
+
+    public void attaquer(Animal other){
+        other.m_pointDeVie -=  this.m_pointAttaque;
+        if (other.m_pointDeVie < 0){
+            other.m_pointDeVie = 0;
+        }
+    }
+
+    public String getNom(){
+        return m_nom;
+    }
+    public int getPV(){
+        return m_pointDeVie;
+    }
+
+    public int getAttaque(){
+        return m_pointAttaque;
+    }
+
+    public int getGouttesSang(){
+        return m_gouttesDeSang;
+    }
+
+    public int getOs(){
+        return m_os;
+    }
+
 }
