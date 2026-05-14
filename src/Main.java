@@ -1,7 +1,6 @@
 import carteAnimal.*;
 import typeCarte.Animal;
 
-import java.sql.SQLSyntaxErrorException;
 import java.util.ArrayList;
 
 public class Main
