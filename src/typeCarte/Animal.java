@@ -27,6 +27,7 @@ public abstract class Animal {
     public String getNom(){
         return m_nom;
     }
+
     public int getPV(){
         return m_pointDeVie;
     }
