@@ -18,6 +18,7 @@ public abstract class Animal {
     }
 
     public void attaquer(Animal other){
+        System.out.println(m_nom + " attaque " + other.m_nom + " !");
         other.m_pointDeVie -=  this.m_pointAttaque;
         if (other.m_pointDeVie < 0){
             other.m_pointDeVie = 0;
@@ -43,5 +44,4 @@ public abstract class Animal {
     public int getOs(){
         return m_os;
     }
-
 }
