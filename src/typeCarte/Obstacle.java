@@ -5,7 +5,7 @@ public abstract class Obstacle {
     private String m_nom;
 
     public Obstacle (int PointVie, String nom) {
-        this.m_vie = PointVie;
-        this.m_nom = nom;
+        m_vie = PointVie;
+        m_nom = nom;
     }
 }
