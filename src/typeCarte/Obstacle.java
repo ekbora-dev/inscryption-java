@@ -8,4 +8,19 @@ public abstract class Obstacle {
         m_vie = PointVie;
         m_nom = nom;
     }
+
+    public int getPV(){
+        return m_vie;
+    }
+
+    public String getNom(){
+        return m_nom;
+    }
+
+    public void subirDegat(int degat){
+        m_vie -= degat;
+        if (m_vie < 0){
+            m_vie = 0;
+        }
+    }
 }

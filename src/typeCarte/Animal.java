@@ -25,6 +25,10 @@ public abstract class Animal {
         }
     }
 
+    public void attaquer(Obstacle other){
+        other.subirDegat(this.m_pointAttaque);
+    }
+
     public String getNom(){
         return m_nom;
     }
@@ -44,4 +48,5 @@ public abstract class Animal {
     public int getOs(){
         return m_os;
     }
+
 }
