@@ -1,20 +1,11 @@
 package typeCarte;
 
-public abstract class Obstacle {
+public abstract class Obstacle extends Carte implements SubisDegat{
     private int m_vie;
     private String m_nom;
 
-    public Obstacle (int PointVie, String nom) {
-        m_vie = PointVie;
-        m_nom = nom;
-    }
-
-    public int getPV(){
-        return m_vie;
-    }
-
-    public String getNom(){
-        return m_nom;
+    public Obstacle (int pointDeVie, String nom) {
+        super(nom, pointDeVie);
     }
 
     public void subirDegat(int degat){
