@@ -1,6 +1,6 @@
 package typeCarte;
 
-public abstract class Animal extends Carte implements Combat{
+public abstract class Animal extends Carte{
     private String m_nom;
     private int m_pointAttaque;
     private int m_pointDeVie;
@@ -16,36 +16,21 @@ public abstract class Animal extends Carte implements Combat{
         m_volant = volant;
     }
 
-    public void attaquer(Animal other){
-        System.out.println(m_nom + " attaque " + other.m_nom + " !");
-        other.m_pointDeVie -=  this.m_pointAttaque;
-        if (other.m_pointDeVie < 0){
-            other.m_pointDeVie = 0;
-        }
-    }
-
-    public void attaquer(Obstacle other){
-        other.subirDegat(this.m_pointAttaque);
-    }
-
-    public String getNom(){
-        return m_nom;
-    }
-
-    public int getPV(){
-        return m_pointDeVie;
-    }
-
+    @Override
     public int getAttaque(){
         return m_pointAttaque;
     }
 
+    @Override
     public int getGouttesSang(){
         return m_gouttesDeSang;
     }
 
+    @Override
     public int getOs(){
         return m_os;
     }
+
+
 
 }
