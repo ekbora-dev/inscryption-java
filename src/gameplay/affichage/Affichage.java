@@ -11,6 +11,8 @@ public class Affichage {
         m_obstacle = carteO;
     }
 
+    
+
 
     public void showCarte(){
         System.out.print ("0-------------0" + "\n" +
