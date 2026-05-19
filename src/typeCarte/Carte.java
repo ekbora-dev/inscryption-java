@@ -41,6 +41,10 @@ public abstract class Carte {
         return m_os;
     }
 
+    public boolean getVolant(){
+        return m_volant;
+    }
+
     public void attaquer(Carte other){
         System.out.println(this.getNom() + " attaque " + other.getNom() + " !");
         other.m_pointDeVie -=  this.m_pointAttaque;
