@@ -8,12 +8,8 @@ import java.util.ArrayList;
 public class Main
 {
     public static void main(String[] args) {
-        Joueur player1 = new Joueur();
+        Partie partie = new Partie();
 
-        for (int i = 0; i < 4; i++){
-            player1.piocher();
-        }
-
-        System.out.println(player1.getPlateau().size());
+        partie.demarrerPartieSansObstacle();
     }
 }
