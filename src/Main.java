@@ -1,4 +1,5 @@
 import carteAnimal.*;
+import gameplay.affichage.Affichage;
 import obstacles.Sapin;
 import typeCarte.*;
 
@@ -16,6 +17,11 @@ public class Main
         for (int i = 0; i < 3; i++) {
             mesCartes.add(ecu);
             sesCartes.add(chat);
+        }
+
+        for (int i = 0; i < 4; i++){
+            Affichage aff = new Affichage(new Grizzly());
+            aff.showCarte();
         }
 
         mesCartes.add(new Grizzly());
