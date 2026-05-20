@@ -1,4 +1,5 @@
 import carteAnimal.*;
+import gameplay.jeu.*;
 import obstacles.Sapin;
 import typeCarte.*;
 
@@ -7,33 +8,12 @@ import java.util.ArrayList;
 public class Main
 {
     public static void main(String[] args) {
-        ArrayList<Carte> mesCartes = new ArrayList<>();
-        ArrayList<Carte> sesCartes = new ArrayList<>();
-        Animal ecu = new Ecureuil();
-        Animal chat = new Chat();
+        Joueur player1 = new Joueur();
 
-        // Cartes sur le plateau
-        for (int i = 0; i < 3; i++) {
-            mesCartes.add(ecu);
-            sesCartes.add(chat);
+        for (int i = 0; i < 4; i++){
+            player1.piocher();
         }
 
-        mesCartes.add(new Grizzly());
-        sesCartes.add(new Sapin());
-
-        // Attaque des cartes
-        for (int i = 0; i < 4; i++) {
-            mesCartes.get(i).attaquer(sesCartes.get(i));
-            sesCartes.get(i).attaquer(mesCartes.get(i));
-        }
-
-        for (int i = 0; i < 4; i++) {
-            if (mesCartes.get(i).getPV() > 0) {
-                System.out.println(mesCartes.get(i).getNom() + " gagne la case " + i);
-            } else {
-                System.out.println(sesCartes.get(i).getNom() + " gagne la case " + i);
-            }
-        }
-
+        System.out.println(player1.getPlateau().size());
     }
 }

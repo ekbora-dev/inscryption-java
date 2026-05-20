@@ -22,6 +22,9 @@ public class Joueur {
     public ArrayList<Carte> getPlateau(){
         return m_plateau;
     }
+    public ArrayList<Carte> getMain(){
+        return m_mainJoueur;
+    }
 
     public boolean piocher(){
         if (m_pioche.isEmpty()){
@@ -34,6 +37,12 @@ public class Joueur {
     public boolean poserCarte(Carte carte, int cellule){
         int carteSacrifiable = m_plateau.size();
         if (carteSacrifiable < carte.getGouttesSang()) {
+            return false;
+        }
+
+        if (m_plateau.get(cellule) != null){
+            m_plateau.add(cellule, carte);
+        } else {
             return false;
         }
         return true;
