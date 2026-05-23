@@ -11,7 +11,7 @@ public class Partie {
     }
 
     public void demarrerPartieSansObstacle(){
-        Joueur robot = new Joueur();
+        Robot robot = new Robot();
         Joueur player = new Joueur();
 
         Carte[] carteAuCentre = new Carte[4];
@@ -28,20 +28,21 @@ public class Partie {
                 partie = false;
             }
 
-            robot.poserCarte(robot.getMain().get(2), 1);
-            robot.poserCarte(robot.getMain().get(0), 0);
+            robot.jouerTour();
 
             robot.afficherCarte();
             System.out.println("================================");
             for (int i = 0; i < carteAuCentre.length; i++){
-                System.out.println("Carte au centre xd");
+                System.out.println("Carte du centre");
             }
             System.out.println("================================");
             player.afficherCarte();
+            player.afficherMain();
+
             System.out.println("Actions possible");
             System.out.println("[fin] Fin de votre tour");
             System.out.println("[piocher] Piocher 1 carte");
-            System.out.println("[placer <numeroCarte> <cellule>] Placer une carte sur une cellule");
+            System.out.println("[placer] Placer une carte sur une cellule");
             Scanner scanner = new Scanner(System.in);
             System.out.print("vous@partie:~$ ");
             String choix = scanner.next();
@@ -51,16 +52,33 @@ public class Partie {
                 break;
             } else if (choix.equals("piocher")){
                 player.piocher();
-                System.out.println("Actions possible");
-                System.out.println("[fin] Fin de votre tour");
-                System.out.println("[placer <numeroCarte> <cellule>] Placer une carte sur une cellule");
-                scanner = new Scanner(System.in);
+            } else if (choix.equals("placer")){
+                System.out.println("format attendu : <numeroCarte> <cellule>");
+                Scanner sn = new Scanner(System.in);
                 System.out.print("vous@partie:~$ ");
-                choix = scanner.next();
+                String valeur = sn.nextLine();
+
+                String[] parties = valeur.split(" ");
+
+                int cellule = Integer.parseInt(parties[0]);
+                int carte = Integer.parseInt(parties[1]);
+
+                System.out.println(cellule);
+                System.out.println(carte);
+
+                player.poserCarte(player.getMain().get(cellule), carte);
+                player.getMain().remove(carte);
             }
 
         }
     }
     public void demarrerPartieAvecObstacle() {
+    }
+
+    @Override
+    public String toString() {
+        return "Partie{" +
+                "m_differenceScore=" + m_differenceScore +
+                '}';
     }
 }

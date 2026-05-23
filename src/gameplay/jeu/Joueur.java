@@ -1,21 +1,26 @@
 package gameplay.jeu;
 
-import carteAnimal.Ecureuil;
+import carteAnimal.*;
 import typeCarte.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.Stack;
 
 public class Joueur {
-    private Stack<Carte> m_pioche = new Stack<>();
-    private ArrayList<Carte> m_mainJoueur = new ArrayList<>();
+    private Stack<Animal> m_pioche = new Stack<>();
+    private ArrayList<Animal> m_mainJoueur = new ArrayList<>();
     private final Carte[] m_plateau = new Carte[4];
     private int m_scoreJoueur = 0;
 
     public Joueur(){
-        for (int i = 0; i < 15; i++){
-            m_pioche.add(new Ecureuil());
+        for (int i = 0; i < 10; i++){
+            m_pioche.push(new Ecureuil());
+        }
+
+        for (int i = 10; i < 15; i++){
+            m_pioche.push(new Hermine());
         }
     }
 
@@ -26,17 +31,25 @@ public class Joueur {
     public Carte[] getPlateau(){
         return m_plateau;
     }
-    public ArrayList<Carte> getMain(){
+    public ArrayList<Animal> getMain(){
         return m_mainJoueur;
     }
 
     public void afficherCarte(){
         for (int i = 0; i < m_plateau.length; i++){
             if (m_plateau[i] == null){
-                System.out.println("- Pas de carte -");
+                System.out.println("Case n" + i + " - Pas de carte -");
                 continue;
             }
-            System.out.println(m_plateau[i].getNom());
+            System.out.println("Case n" + i + " - " + m_plateau[i].getNom() + " : PV : " + m_plateau[i].getPV() + " - Att : " + m_plateau[i].getAttaque());
+        }
+    }
+
+    public void afficherMain(){
+        System.out.println("Votre main");
+        for (int i = 0; i < m_mainJoueur.size(); i++){
+            Animal carteActuelle = m_mainJoueur.get(i);
+            System.out.println("\t" + i + ". " + carteActuelle.getNom() +" PV: " + carteActuelle.getPV() + " Att: " + carteActuelle.getAttaque() + " Gouttes de sang: " + carteActuelle.getGouttesSang() + " Os : " + carteActuelle.getOs() + " Volante : " + (carteActuelle.getVolant() ? "Oui" : "Non"));
         }
     }
 
@@ -59,16 +72,37 @@ public class Joueur {
             while (i < carte.getGouttesSang()) {
                 int index;
                 Scanner sn = new Scanner(System.in);
-                System.out.print("Choisissez les cartes à sacrifier");
+                System.out.print("Choisissez les cartes à sacrifier de gauche (0) à droite (3)");
                 index = Integer.parseInt(sn.next());
                 i += m_plateau[index].getGouttesSang();
 
                 m_plateau[index] = null;
-
             }
         }
 
         m_plateau[cellule] = carte;
         return true;
+    }
+
+    public void attaquer(Joueur other){
+        for (int i = 0; i < m_plateau.length; i++){
+            m_plateau[i].attaquer(other.m_plateau[i]);
+        }
+
+        for(int i = 0; i < m_plateau.length; i++){
+            if (other.m_plateau[i].getPV() == 0){
+                other.m_plateau[i] = null;
+            }
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Joueur{" +
+                "m_pioche=" + m_pioche +
+                ", m_mainJoueur=" + m_mainJoueur +
+                ", m_plateau=" + Arrays.toString(m_plateau) +
+                ", m_scoreJoueur=" + m_scoreJoueur +
+                '}';
     }
 }

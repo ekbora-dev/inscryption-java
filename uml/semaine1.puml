@@ -9,7 +9,7 @@ class Main{
 
 Main .> typeCarte.Animal : <<instantiate>>
 package typeCarte{
-    class Animal{
+    abstract class Carte{
         - m_nom : String
         - m_pointAttaque : Integer
         - m_pointDeVie : Integer
@@ -24,8 +24,11 @@ package typeCarte{
         + getGouttesSang() : Integer
         + getOs() : Integer
     }
+    class Animal extends Carte{
+        +<<Create>> Animal(nom : String, pointAttaque : Integer, PV : Integer, gouttesDeSang : Integer, os : Integer, volant : Boolean)
+    }
 
-    class Obstacle{
+    class Obstacle extends Carte{
         - m_vie : Integer
         - m_nom : String
         + <<Create>> Obstacle(PV : Integer, nom : String)
@@ -72,6 +75,43 @@ package carteAnimal{
     }
     class Punaise extends typeCarte.Animal{
         + <<Create>> Punaise(nom : String, pointAttaque : Integer, PV : Integer, gouttesDeSang : Integer, os : Integer, volant : Boolean)
+    }
+}
+
+package gameplay{
+    package jeu{
+        class Partie{
+            +<<Create>> Partie()
+            + demarrerPartieSansObstacle()
+            + demarrerPartieAvecObstacle()
+            + ToString() : String
+        }
+
+        class Joueur{
+            - m_scoreJoueur : Integer
+            +<<Create>> Joueur()
+            + getScoreJoueur()
+            + getPlateau()
+            + getMain()
+            + afficherCarte()
+            + afficherMain()
+            + piocher()
+            + poserCarte(carte : Carte, cellule : Integer)
+            + attaquer(autre : Joueur)
+            +ToString() : String;
+
+        }
+
+        class Robot extends Joueur{
+            +<<Create>> Robot()
+            + jouerTour()
+            + ToString() : String
+        }
+
+        Joueur *----> "1" Animal : m_pioche\nm_mainJoueur
+        Joueur *--> "1" typeCarte.Carte  : m_plateau
+        Partie .> Joueur : <<use>>
+
     }
 }
 @enduml
