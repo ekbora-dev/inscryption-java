@@ -29,8 +29,6 @@ package typeCarte{
     }
 
     class Obstacle extends Carte{
-        - m_vie : Integer
-        - m_nom : String
         + <<Create>> Obstacle(PV : Integer, nom : String)
     }
 }
@@ -112,6 +110,14 @@ package gameplay{
         Joueur *--> "1" typeCarte.Carte  : m_plateau
         Partie .> Joueur : <<use>>
 
+    }
+
+    package affichage{
+        class Affichage{
+            +{static} afficherCarte(carte : Carte)
+        }
+
+        Affichage .> typeCarte.Carte : <<use>>
     }
 }
 @enduml

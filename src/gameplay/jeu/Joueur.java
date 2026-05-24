@@ -20,7 +20,7 @@ public class Joueur {
         }
 
         for (int i = 10; i < 15; i++){
-            m_pioche.push(new Hermine());
+            m_pioche.push(new Punaise());
         }
     }
 
@@ -38,10 +38,10 @@ public class Joueur {
     public void afficherCarte(){
         for (int i = 0; i < m_plateau.length; i++){
             if (m_plateau[i] == null){
-                System.out.println("Case n" + i + " - Pas de carte -");
+                System.out.println("Case n°" + i + " - Pas de carte -");
                 continue;
             }
-            System.out.println("Case n" + i + " - " + m_plateau[i].getNom() + " : PV : " + m_plateau[i].getPV() + " - Att : " + m_plateau[i].getAttaque());
+            System.out.println("Case n°" + i + " - " + m_plateau[i].getNom() + " : PV : " + m_plateau[i].getPV() + " - Att : " + m_plateau[i].getAttaque());
         }
     }
 
@@ -86,12 +86,15 @@ public class Joueur {
 
     public void attaquer(Joueur other){
         for (int i = 0; i < m_plateau.length; i++){
-            m_plateau[i].attaquer(other.m_plateau[i]);
-        }
-
-        for(int i = 0; i < m_plateau.length; i++){
-            if (other.m_plateau[i].getPV() == 0){
-                other.m_plateau[i] = null;
+            if (m_plateau[i] != null){
+                if (other.m_plateau[i] != null){
+                    m_scoreJoueur += m_plateau[i].attaquer(other.m_plateau[i]);
+                    if (other.m_plateau[i].getPV() <= 0){
+                        other.m_plateau[i] = null;
+                    }
+                } else{
+                    m_scoreJoueur += m_plateau[i].getAttaque();
+                }
             }
         }
     }

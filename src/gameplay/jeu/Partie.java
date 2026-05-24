@@ -29,6 +29,7 @@ public class Partie {
             }
 
             robot.jouerTour();
+            robot.attaquer(player);
 
             robot.afficherCarte();
             System.out.println("================================");
@@ -63,11 +64,9 @@ public class Partie {
                 int cellule = Integer.parseInt(parties[0]);
                 int carte = Integer.parseInt(parties[1]);
 
-                System.out.println(cellule);
-                System.out.println(carte);
-
                 player.poserCarte(player.getMain().get(cellule), carte);
                 player.getMain().remove(carte);
+                player.attaquer(robot);
             }
 
         }

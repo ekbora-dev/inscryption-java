@@ -19,10 +19,14 @@ public class Robot extends Joueur{
         int position = -1;
 
         for (int i = 0; i < getPlateau().length; i++){
-            if (getPlateau()[i] != null){
+            if (getPlateau()[i] == null){
                 position = i;
                 break;
             }
+        }
+
+        if (position == -1){
+            return;
         }
 
         Animal carte = getMain().get(0); // Carte à poser
@@ -33,24 +37,26 @@ public class Robot extends Joueur{
 
         if (carte.getGouttesSang() == 0){
             poserCarte(carte, position);
-        }
-
-        for (int i = 0; i < getPlateau().length; i++){
-            if (getPlateau()[i] != null && cout > total){
-                total += getPlateau()[i].getGouttesSang();
-                carteASacrifier.add(getPlateau()[i]);
-            }
-        }
-
-        if (total >= cout){
+        } else {
             for (int i = 0; i < getPlateau().length; i++){
-                if (getPlateau()[i] == carteASacrifier.get(i) && getPlateau()[i] != null){
-                    getPlateau()[i] = null;
-                    position = i;
+                if (getPlateau()[i] != null && cout > total){
+                    total += getPlateau()[i].getGouttesSang();
+                    carteASacrifier.add(getPlateau()[i]);
                 }
             }
-            poserCarte(carte, position);
+
+            if (total >= cout){
+                for (int i = 0; i < getPlateau().length; i++){
+                    if (getPlateau()[i] == carteASacrifier.get(i) && getPlateau()[i] != null){
+                        getPlateau()[i] = null;
+                        position = i;
+                    }
+                }
+                poserCarte(carte, position);
+            }
         }
+
+
     }
 
     @Override
