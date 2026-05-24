@@ -1,9 +1,6 @@
 import carteAnimal.*;
 import gameplay.jeu.*;
-import obstacles.Sapin;
 import typeCarte.*;
-
-import java.util.ArrayList;
 
 public class Main
 {
