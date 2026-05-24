@@ -45,11 +45,15 @@ public abstract class Carte {
         return m_volant;
     }
 
-    public void attaquer(Carte other){
+    public int attaquer(Carte other){
+        int differenceScore = 0;
         System.out.println(this.getNom() + " attaque " + other.getNom() + " !");
         other.m_pointDeVie -=  this.m_pointAttaque;
         if (other.m_pointDeVie < 0){
+            differenceScore = other.m_pointDeVie * (-1); // Ici, on récupère les dégâts en trop pour affecter le score
             other.m_pointDeVie = 0;
         }
+
+        return differenceScore;
     };
 }

@@ -9,35 +9,27 @@ class Main{
 
 Main .> typeCarte.Animal : <<instantiate>>
 package typeCarte{
-    class Carte{
+    abstract class Carte{
         - m_nom : String
         - m_pointAttaque : Integer
         - m_pointDeVie : Integer
         - m_gouttesDeSang : Integer
         - m_os : Integer
         - m_volant : Boolean
-        + <<Create>> Carte(nom : String, pointAttaque : Integer, PV : Integer, gouttesDeSang : Integer, os : Integer, volant : Boolean)
-        + <<Create>> Carte(nom : String, PV : Integer)
+        + <<Create>> Animal(nom : String, pointAttaque : Integer, PV : Integer, gouttesDeSang : Integer, os : Integer, volant : Boolean)
         + attaquer(other : Animal)
         + getNom() : String
         + getPV() : Integer
         + getAttaque() : Integer
         + getGouttesSang() : Integer
         + getOs() : Integer
-        + getVolant() : Boolean
     }
     class Animal extends Carte{
-        - m_pointAttaque : Integer
-        - m_gouttesDeSang : Integer
-        - m_os : Integer
-        - m_volant : Boolean
-        +<<Create>> Carte(nom : String, PV : Integer, pointAttaque : Integer, gouttesDeSang : Integer, os : Integer, volant : Boolean)
+        +<<Create>> Animal(nom : String, pointAttaque : Integer, PV : Integer, gouttesDeSang : Integer, os : Integer, volant : Boolean)
     }
 
     class Obstacle extends Carte{
-        - m_vie : Integer
-        - m_nom : String
-        + <<Create>> Carte(PV : Integer, nom : String)
+        + <<Create>> Obstacle(PV : Integer, nom : String)
     }
 }
 
@@ -86,16 +78,46 @@ package carteAnimal{
 
 package gameplay{
     package jeu{
+        class Partie{
+            +<<Create>> Partie()
+            + demarrerPartieSansObstacle()
+            + demarrerPartieAvecObstacle()
+            + ToString() : String
+        }
+
         class Joueur{
             - m_scoreJoueur : Integer
             +<<Create>> Joueur()
-            + getScoreJoueur() : Integer
+            + getScoreJoueur()
+            + getPlateau()
+            + getMain()
+            + afficherCarte()
+            + afficherMain()
             + piocher()
-            + placerCarte(cellule : Integer, carte : Animal)
+            + poserCarte(carte : Carte, cellule : Integer)
+            + attaquer(autre : Joueur)
+            +ToString() : String;
+
         }
 
-        Joueur *--> Carte : "m_pioche"
-        Joueur *--> Animal : "m_main\nm_plateau"
+        class Robot extends Joueur{
+            +<<Create>> Robot()
+            + jouerTour()
+            + ToString() : String
+        }
+
+        Joueur *----> "1" Animal : m_pioche\nm_mainJoueur
+        Joueur *--> "1" typeCarte.Carte  : m_plateau
+        Partie .> Joueur : <<use>>
+
+    }
+
+    package affichage{
+        class Affichage{
+            +{static} afficherCarte(carte : Carte)
+        }
+
+        Affichage .> typeCarte.Carte : <<use>>
     }
 }
 @enduml

@@ -1,0 +1,59 @@
+package gameplay.affichage;
+
+import typeCarte.Animal;
+import typeCarte.Carte;
+import typeCarte.Obstacle;
+
+public class Affichage {
+    private Carte m_carte ;
+    public Affichage(Carte carte){
+        m_carte = carte;
+    }
+
+    
+
+
+    public void showCarte(){
+        System.out.print ("0-------------0" + "\n" +
+                          "| " + m_carte.getNom()+ "        |\n" +
+                          "|-------------|\n" +
+                          "|             |\n" +
+                          "|             |\n" +
+                          "|             |\n" +
+                          "|             |\n" +
+                          "|             |\n" +
+                          "|             |\n" +
+                          "0-------------0\n\n");
+
+    }
+
+    public void placeDeck() {
+        System.out.print(
+                "#-------------#" + "\n" +
+                        "|             |\n" +
+                        "|             |\n" +
+                        "|             |\n" +
+                        "|             |\n" +
+                        "|             |\n" +
+                        "|             |\n" +
+                        "|             |\n" +
+                        "|             |\n" +
+                        "#-------------#\n\n");
+
+    }
+
+    public void pioche(){
+        System.out.print(
+                "[=============]" + "\n" +
+                        "|             |\n" +
+                        "|    #####    |\n" +
+                        "|    #   #    |\n" +
+                        "|    #####    |\n" +
+                        "|    #        |\n" +
+                        "|    #        |\n" +
+                        "|             |\n" +
+                        "|             |\n" +
+                        "[=============]");
+        ;
+    }
+}
