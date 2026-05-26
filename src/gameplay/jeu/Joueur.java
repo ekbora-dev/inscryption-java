@@ -9,8 +9,8 @@ import java.util.Scanner;
 import java.util.Stack;
 
 public class Joueur {
-    private Stack<Animal> m_pioche = new Stack<>();
-    private ArrayList<Animal> m_mainJoueur = new ArrayList<>();
+    private final Stack<Animal> m_pioche = new Stack<>();
+    private final ArrayList<Animal> m_mainJoueur = new ArrayList<>();
     private final Carte[] m_plateau = new Carte[4];
     private int m_scoreJoueur = 0;
 
@@ -41,7 +41,11 @@ public class Joueur {
                 System.out.println("Case n°" + i + " - Pas de carte -");
                 continue;
             }
-            System.out.println("Case n°" + i + " - " + m_plateau[i].getNom() + " : PV : " + m_plateau[i].getPV() + " - Att : " + m_plateau[i].getAttaque());
+            if (m_plateau[i].getVolant()){
+                System.out.println("Case n°" + i + " - " + m_plateau[i].getNom() + " : PV : " + m_plateau[i].getPV() + " - Att : " + m_plateau[i].getAttaque() + " - Volante");
+            } else {
+                System.out.println("Case n°" + i + " - " + m_plateau[i].getNom() + " : PV : " + m_plateau[i].getPV() + " - Att : " + m_plateau[i].getAttaque());
+            }
         }
     }
 
@@ -62,7 +66,6 @@ public class Joueur {
     }
 
     public boolean poserCarte(Carte carte, int cellule) {
-        int carteSacrifiable = m_plateau.length;
         if (m_plateau[cellule] != null) {
             return false;
         }
@@ -88,7 +91,7 @@ public class Joueur {
         for (int i = 0; i < m_plateau.length; i++){
             if (m_plateau[i] != null){
                 if (other.m_plateau[i] != null){
-                    m_scoreJoueur += m_plateau[i].attaquer(other.m_plateau[i]);
+                    m_plateau[i].attaquer(other.m_plateau[i]);
                     if (other.m_plateau[i].getPV() <= 0){
                         other.m_plateau[i] = null;
                     }

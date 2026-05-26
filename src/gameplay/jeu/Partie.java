@@ -10,9 +10,10 @@ public class Partie {
 
     }
 
-    public void demarrerPartieSansObstacle(){
-        Robot robot = new Robot();
+    public String demarrerPartieSansObstacle(){
         Joueur player = new Joueur();
+        Robot robot = new Robot(player);
+
 
         Carte[] carteAuCentre = new Carte[4];
 
@@ -21,15 +22,19 @@ public class Partie {
             player.piocher();
         }
 
-        boolean partie = true;
 
-        while (partie){
-            if (m_differenceScore == 5){
-                partie = false;
+        while (true){
+            if (Math.abs(m_differenceScore) >= 5){
+                if (player.getScoreJoueur() > robot.getScoreJoueur()){
+                    System.out.println("Vous gagnez la partie");
+                    return "Vous";
+                } else {
+                    System.out.println("Le robot a gagné, vous ferez mieux la prochaine fois...");
+                    return "Robot";
+                }
             }
 
             robot.jouerTour();
-            robot.attaquer(player);
 
             robot.afficherCarte();
             System.out.println("================================");
@@ -44,33 +49,49 @@ public class Partie {
             System.out.println("[fin] Fin de votre tour");
             System.out.println("[piocher] Piocher 1 carte");
             System.out.println("[placer] Placer une carte sur une cellule");
-            Scanner scanner = new Scanner(System.in);
-            System.out.print("vous@partie:~$ ");
-            String choix = scanner.next();
-
-            if (choix.equals("fin")){
-                System.out.println("Fin du tour");
-                break;
-            } else if (choix.equals("piocher")){
-                player.piocher();
-            } else if (choix.equals("placer")){
-                System.out.println("format attendu : <numeroCarte> <cellule>");
-                Scanner sn = new Scanner(System.in);
+            boolean tour = true;
+            boolean piocher = false;
+            while (tour){
+                Scanner scanner = new Scanner(System.in);
                 System.out.print("vous@partie:~$ ");
-                String valeur = sn.nextLine();
+                String choix = scanner.next();
 
-                String[] parties = valeur.split(" ");
 
-                int cellule = Integer.parseInt(parties[0]);
-                int carte = Integer.parseInt(parties[1]);
+                switch (choix) {
+                    case "fin":
+                        System.out.println("Fin du tour");
+                        tour = false;
+                        break;
+                    case "piocher":
+                        if (piocher) {
+                            System.out.println("Vous avez déjà pioché !");
+                        } else {
+                            player.piocher();
+                            piocher = true;
+                        }
+                        break;
+                    case "placer":
+                        System.out.println("Format attendu : <numeroCarte> <cellule>");
+                        Scanner sn = new Scanner(System.in);
+                        System.out.print("vous@partie:~$ ");
+                        String valeur = sn.nextLine();
 
-                player.poserCarte(player.getMain().get(cellule), carte);
-                player.getMain().remove(carte);
-                player.attaquer(robot);
+                        String[] parties = valeur.split(" ");
+
+                        int cellule = Integer.parseInt(parties[0]);
+                        int carte = Integer.parseInt(parties[1]);
+
+                        player.poserCarte(player.getMain().get(cellule), carte);
+                        player.getMain().remove(carte);
+                        break;
+                }
             }
-
+            player.attaquer(robot);
+            m_differenceScore = player.getScoreJoueur() - robot.getScoreJoueur();
+            System.out.println(m_differenceScore);
         }
     }
+
     public void demarrerPartieAvecObstacle() {
     }
 

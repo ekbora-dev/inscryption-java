@@ -6,8 +6,10 @@ import typeCarte.Carte;
 import java.util.ArrayList;
 
 public class Robot extends Joueur{
-    public Robot(){
+    private Joueur m_other;
+    public Robot(Joueur other){
         super();
+        m_other = other;
     }
 
     public void jouerTour(){
@@ -19,9 +21,15 @@ public class Robot extends Joueur{
         int position = -1;
 
         for (int i = 0; i < getPlateau().length; i++){
+            // Vérifier si une carte a un PV nul
+
             if (getPlateau()[i] == null){
                 position = i;
                 break;
+            }
+
+            if (getPlateau()[i].getPV() == 0){
+                getPlateau()[i] = null;
             }
         }
 
@@ -35,8 +43,10 @@ public class Robot extends Joueur{
         int total = 0;
         ArrayList<Carte> carteASacrifier = new ArrayList<>();
 
+        // Gestion du sacrifice
         if (carte.getGouttesSang() == 0){
             poserCarte(carte, position);
+            getMain().remove(carte);
         } else {
             for (int i = 0; i < getPlateau().length; i++){
                 if (getPlateau()[i] != null && cout > total){
@@ -53,9 +63,10 @@ public class Robot extends Joueur{
                     }
                 }
                 poserCarte(carte, position);
+                getMain().remove(carte);
             }
         }
-
+        this.attaquer(m_other);
 
     }
 

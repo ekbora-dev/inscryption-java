@@ -1,12 +1,12 @@
 package typeCarte;
 
 public abstract class Carte {
-    private String m_nom;
-    private int m_pointAttaque;
+    private final String m_nom;
+    private final int m_pointAttaque;
     private int m_pointDeVie;
-    private int m_gouttesDeSang;
-    private int m_os;
-    private boolean m_volant;
+    private final int m_gouttesDeSang;
+    private final int m_os;
+    private final boolean m_volant;
 
     public Carte (String nom, int PV) {
         this(nom, PV, 0, 0, 0,false);
@@ -45,15 +45,11 @@ public abstract class Carte {
         return m_volant;
     }
 
-    public int attaquer(Carte other){
-        int differenceScore = 0;
+    public void attaquer(Carte other){
         System.out.println(this.getNom() + " attaque " + other.getNom() + " !");
         other.m_pointDeVie -=  this.m_pointAttaque;
         if (other.m_pointDeVie < 0){
-            differenceScore = other.m_pointDeVie * (-1); // Ici, on récupère les dégâts en trop pour affecter le score
             other.m_pointDeVie = 0;
         }
-
-        return differenceScore;
-    };
+    }
 }
