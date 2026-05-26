@@ -9,8 +9,14 @@ public class Main
        // partie.demarrerPartieSansObstacle();
 
         Affichage aff = new Affichage(new Punaise());
-        aff.showCarte();
+        aff.getCarteLines();
 
+
+        Affichage aff2 = new Affichage(new Corbeau());
+        aff2.getCarteLines();
+
+        Affichage aff3 = new Affichage(new Ecureuil());
+        aff3.getCarteLines();
 
     }
 }

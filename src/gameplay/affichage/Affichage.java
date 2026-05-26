@@ -27,34 +27,40 @@ public class Affichage {
 
     }
 
-    public void placeDeck() {
-        System.out.print(
-                "#-------------#" + "\n" +
-                        "|             |\n" +
-                        "|             |\n" +
-                        "|             |\n" +
-                        "|             |\n" +
-                        "|             |\n" +
-                        "|             |\n" +
-                        "|             |\n" +
-                        "|             |\n" +
-                        "#-------------#\n\n");
-
+    public String[] getDeckLines() {
+        return new String[]{
+                "#-------------#",
+                "|             |",
+                "|             |",
+                "|             |",
+                "|             |",
+                "|             |",
+                "|             |",
+                "|             |",
+                "|             |",
+                "#-------------#"
+        };
     }
 
+    // Retourne le dessin de la pioche
+    // Retourne le dessin de la carte sous forme de lignes
+    public String[] getCarteLines() {
+        // Gestion de la taille du nom pour éviter de déformer le cadre (ex: max 9 caractères)
+        String nom = m_carte.getNom();
+        if (nom.length() > 9) nom = nom.substring(0, 9);
+        else nom = String.format("%-9s", nom); // Aligne à gauche et remplit d'espaces
 
-    public void pioche(){
-        System.out.print(
-                "[=============]" + "\n" +
-                        "|             |\n" +
-                        "|    #####    |\n" +
-                        "|    #   #    |\n" +
-                        "|    #####    |\n" +
-                        "|    #        |\n" +
-                        "|    #        |\n" +
-                        "|             |\n" +
-                        "|             |\n" +
-                        "[=============]");
-        ;
+        return new String[]{
+                "0-------------0",
+                "| " + nom + "   |",
+                "|-------------|",
+                String.format("|PV =  %-7d|", m_carte.getPV()),
+                String.format("|GTE = %-7d|", m_carte.getGouttesSang()),
+                String.format("|ATQ = %-7d|", m_carte.getAttaque()),
+                String.format("|OS =  %-7d|", m_carte.getOs()),
+                String.format("|VOL = %-7b|", m_carte.getVolant()),
+                "|             |",
+                "0-------------0"
+        };
     }
 }
