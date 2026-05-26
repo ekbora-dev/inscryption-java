@@ -1,8 +1,8 @@
 package gameplay.affichage;
 
-import typeCarte.Animal;
 import typeCarte.Carte;
-import typeCarte.Obstacle;
+
+
 
 public class Affichage {
     private Carte m_carte ;
@@ -10,18 +10,18 @@ public class Affichage {
         m_carte = carte;
     }
 
-    
+
 
 
     public void showCarte(){
         System.out.print ("0-------------0" + "\n" +
-                          "| " + m_carte.getNom()+ "        |\n" +
+                          "| " + m_carte.getNom()+ "    |\n" +
                           "|-------------|\n" +
-                          "|             |\n" +
-                          "|             |\n" +
-                          "|             |\n" +
-                          "|             |\n" +
-                          "|             |\n" +
+                          "|PV =  "+ m_carte.getPV()+ "      |\n" +
+                          "|GTE = " + m_carte.getGouttesSang() + "      |\n" +
+                          "|ATQ = " + m_carte.getAttaque() + "      |\n" +
+                          "|OS =  " + m_carte.getOs() +"      |\n" +
+                          "|VOL = " + m_carte.getVolant() + "  |\n" +
                           "|             |\n" +
                           "0-------------0\n\n");
 
@@ -41,6 +41,7 @@ public class Affichage {
                         "#-------------#\n\n");
 
     }
+
 
     public void pioche(){
         System.out.print(
