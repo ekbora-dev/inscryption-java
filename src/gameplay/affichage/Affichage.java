@@ -28,19 +28,18 @@ public class Affichage {
     }
 
     public void placeDeck() {
-        System.out.print(
-                "#-------------#" + "\n" +
-                        "|             |\n" +
-                        "|             |\n" +
-                        "|             |\n" +
-                        "|             |\n" +
-                        "|             |\n" +
-                        "|             |\n" +
-                        "|             |\n" +
-                        "|             |\n" +
-                        "#-------------#\n\n");
-
-    }
+        String[] lignesCarte = {
+                "#-------------#",
+                "|             |",
+                "|             |",
+                "|             |",
+                "|             |",
+                "|             |",
+                "|             |",
+                "|             |",
+                "|             |",
+                "#-------------#"
+        };
 
     int nbLigneGrille = 3;
     int nbColonneGrille = 4;
@@ -56,9 +55,9 @@ public class Affichage {
         System.out.println();
     }
 
-    public void pioche(){
-        System.out.print(
-                "[=============]" + "\n" +
+     /* public void pioche(){
+         System.out.print(
+           /*     "[=============]\n" +
                         "|             |\n" +
                         "|    #####    |\n" +
                         "|    #   #    |\n" +
@@ -68,6 +67,8 @@ public class Affichage {
                         "|             |\n" +
                         "|             |\n" +
                         "[=============]");
-        ;
+
+    }*/
+
     }
 }
