@@ -13,15 +13,24 @@ public class Joueur {
     private final ArrayList<Animal> m_mainJoueur = new ArrayList<>();
     private final Carte[] m_plateau = new Carte[4];
     private int m_scoreJoueur = 0;
+    private int os = 0;
 
     public Joueur(){
-        for (int i = 0; i < 10; i++){
-            m_pioche.push(new Ecureuil());
-        }
-
-        for (int i = 10; i < 15; i++){
-            m_pioche.push(new Punaise());
-        }
+        m_pioche.push(new Ecureuil());
+        m_pioche.push(new Ecureuil());
+        m_pioche.push(new Punaise());
+        m_pioche.push(new Chat());
+        m_pioche.push(new Grizzly());
+        m_pioche.push(new Moineau());
+        m_pioche.push(new Coyote());
+        m_pioche.push(new Louveteau());
+        m_pioche.push(new Loup());
+        m_pioche.push(new Hermine());
+        m_pioche.push(new Ecureuil());
+        m_pioche.push(new Corbeau());
+        m_pioche.push(new Ecureuil());
+        m_pioche.push(new Ecureuil());
+        m_pioche.push(new Ecureuil());
     }
 
     public int getScoreJoueur(){
@@ -65,25 +74,38 @@ public class Joueur {
         return true;
     }
 
-    public boolean poserCarte(Carte carte, int cellule) {
+    public boolean poserCarteRobot(Carte carte, int cellule) {
         if (m_plateau[cellule] != null) {
             return false;
         }
 
         if (carte.getGouttesSang() > 0) {
-            int i = 0;
-            while (i < carte.getGouttesSang()) {
-                int index;
+            int nbCarteASacrifier = 0;
+            while (nbCarteASacrifier < carte.getGouttesSang()) {
                 Scanner sn = new Scanner(System.in);
-                System.out.print("Choisissez les cartes à sacrifier de gauche (0) à droite (3)");
-                index = Integer.parseInt(sn.next());
-                i += m_plateau[index].getGouttesSang();
+                afficherMain();
+                System.out.println("Attention, la carte " + carte.getNom() + " nécessite 1 ou plusieurs sacrifice ! Carte à sacrifier restante(s) : " + nbCarteASacrifier);
+                System.out.print("Saisir l'indice de la carte à sacrifier : ");
+                int index = Integer.parseInt(sn.next());
+                if (m_plateau[index] == null){
+                    System.out.println("Cette case est déja vide !");
+                } else {
+                    m_plateau[index] = null;
+                    nbCarteASacrifier++;
+                }
+            }
 
-                m_plateau[index] = null;
+            if (nbCarteASacrifier >= carte.getGouttesSang()){
+                m_plateau[cellule] = carte;
+                return true;
+            }
+            else {
+                return false;
             }
         }
 
         m_plateau[cellule] = carte;
+
         return true;
     }
 

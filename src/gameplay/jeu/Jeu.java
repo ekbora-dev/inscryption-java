@@ -7,6 +7,8 @@ public class Jeu {
         int compteurRobot = 0;
         int compteurJoueur = 0;
         for (int i = 0; i < 3; i++){
+            int numPartie = i+1;
+            System.out.println("=====DEBUT DE LA PARTIE n°" + numPartie + "=====");
             Partie partie = new Partie();
             vainqueur = partie.demarrerPartieSansObstacle();
 

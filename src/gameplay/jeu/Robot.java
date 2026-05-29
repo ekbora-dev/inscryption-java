@@ -1,22 +1,19 @@
 package gameplay.jeu;
 
 import typeCarte.Animal;
-import typeCarte.Carte;
-
-import java.util.ArrayList;
 
 public class Robot extends Joueur{
-    private Joueur m_other;
+    private final Joueur m_other;
     public Robot(Joueur other){
         super();
         m_other = other;
     }
 
     public void jouerTour(){
+        System.out.println(getMain().toString());
         if (getMain().isEmpty()){
             piocher();
         }
-
 
         int position = -1;
 
@@ -33,45 +30,91 @@ public class Robot extends Joueur{
             }
         }
 
-        if (position == -1){
+
+        int carteSacrifiable = 0;
+        Animal carte = null;
+
+        for (int i = 0; i < getMain().size(); i++){
+            if (getMain().get(i).getGouttesSang() == 0){
+                carte = getMain().get(i);
+                break;
+            }
+        }
+
+        for (int i = 0; i < getMain().size(); i++){
+            if (getMain().get(i).getGouttesSang() <= carteSacrifiable){
+                carte = getMain().get(i);
+                break;
+            }
+        }
+
+        for (int i = 0; i < getPlateau().length; i++){
+            if (getPlateau()[i] != null){
+                carteSacrifiable++;
+                if (carte != null){
+                    if (carteSacrifiable == carte.getGouttesSang()){
+                        break;
+                    }
+                }
+
+            }
+        }
+
+        if (position == -1) {
             return;
         }
 
-        Animal carte = getMain().get(0); // Carte à poser
-
-        int cout = carte.getGouttesSang();
-        int total = 0;
-        ArrayList<Carte> carteASacrifier = new ArrayList<>();
-
-        // Gestion du sacrifice
-        if (carte.getGouttesSang() == 0){
-            poserCarte(carte, position);
-            getMain().remove(carte);
+        if (carte != null){
+            poserCarteRobot(carte, position);
+            System.out.println("Le robot joue son tour");
         } else {
-            for (int i = 0; i < getPlateau().length; i++){
-                if (getPlateau()[i] != null && cout > total){
-                    total += getPlateau()[i].getGouttesSang();
-                    carteASacrifier.add(getPlateau()[i]);
-                }
-            }
-
-            if (total >= cout){
-                for (int i = 0; i < getPlateau().length; i++){
-                    if (getPlateau()[i] == carteASacrifier.get(i) && getPlateau()[i] != null){
-                        getPlateau()[i] = null;
-                        position = i;
-                    }
-                }
-                poserCarte(carte, position);
-                getMain().remove(carte);
-            }
+            System.out.println("Le robot passe son tour");
         }
         this.attaquer(m_other);
 
     }
 
+    public boolean poserCarteRobot(Animal carte, int cellule) {
+        if (getPlateau()[cellule] != null) {
+            return false;
+        }
+
+        if (carte.getGouttesSang() > 0) {
+            int nbCarteASacrifier = 0;
+            for (int i = 0; i < getPlateau().length; i++){
+                if (getPlateau()[i] != null){
+                    nbCarteASacrifier++;
+                    if (nbCarteASacrifier == carte.getGouttesSang()){
+                        break;
+                    }
+                }
+            }
+
+            if (nbCarteASacrifier == carte.getGouttesSang()){
+                for (int i = 0; i < nbCarteASacrifier; i++){
+                    if (getPlateau()[i] != null){
+                        getPlateau()[i] = null;
+                    }
+                }
+
+                getPlateau()[cellule] = carte;
+                getMain().remove(carte);
+
+                return true;
+            }
+            return false;
+        }
+
+        getPlateau()[cellule] = carte;
+        getMain().remove(carte);
+
+        return true;
+    }
+
     @Override
     public String toString() {
-        return "Robot{}";
+        return "Robot{" +
+                "m_other=" + m_other +
+                '}';
     }
 }

@@ -71,7 +71,7 @@ public class Partie {
                         }
                         break;
                     case "placer":
-                        System.out.println("Format attendu : <numeroCarte> <cellule>");
+                        System.out.println("Format attendu : <cellule> <numéroCarte>");
                         Scanner sn = new Scanner(System.in);
                         System.out.print("vous@partie:~$ ");
                         String valeur = sn.nextLine();
@@ -81,14 +81,13 @@ public class Partie {
                         int cellule = Integer.parseInt(parties[0]);
                         int carte = Integer.parseInt(parties[1]);
 
-                        player.poserCarte(player.getMain().get(cellule), carte);
+                        player.poserCarteRobot(player.getMain().get(carte), cellule);
                         player.getMain().remove(carte);
                         break;
                 }
             }
             player.attaquer(robot);
             m_differenceScore = player.getScoreJoueur() - robot.getScoreJoueur();
-            System.out.println(m_differenceScore);
         }
     }
 

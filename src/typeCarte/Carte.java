@@ -46,7 +46,6 @@ public abstract class Carte {
     }
 
     public void attaquer(Carte other){
-        System.out.println(this.getNom() + " attaque " + other.getNom() + " !");
         other.m_pointDeVie -=  this.m_pointAttaque;
         if (other.m_pointDeVie < 0){
             other.m_pointDeVie = 0;
