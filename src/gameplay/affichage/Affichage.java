@@ -42,6 +42,20 @@ public class Affichage {
 
     }
 
+    int nbLigneGrille = 3;
+    int nbColonneGrille = 4;
+    String espaceEntreCartes = "   ";
+
+    for(int grilleLigne = 0; grilleLigne < nbLigneGrille; grilleLigne++) {
+        for (int i = 0; i < lignesCarte.length; i++) {
+            for (int grilleCol = 0; grilleCol < nbColonneGrille; grilleCol++) {
+                System.out.print(lignesCarte[i] + espaceEntreCartes);
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+
     public void pioche(){
         System.out.print(
                 "[=============]" + "\n" +
