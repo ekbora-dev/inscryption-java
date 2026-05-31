@@ -78,6 +78,13 @@ package carteAnimal{
 
 package gameplay{
     package jeu{
+
+        class Jeu {
+            + <<Create>> Jeu()
+            + demarrerJeuSansObstacle()
+        }
+
+        Jeu .> Partie : <<use>>
         class Partie{
             +<<Create>> Partie()
             + demarrerPartieSansObstacle()
@@ -87,37 +94,43 @@ package gameplay{
 
         class Joueur{
             - m_scoreJoueur : Integer
+            - m_os : Integer
             +<<Create>> Joueur()
-            + getScoreJoueur()
+            + getScoreJoueur() : Integer
             + getPlateau()
             + getMain()
+            + getOs() : int
             + afficherCarte()
             + afficherMain()
             + piocher()
+            + getTaillePioche() : Integer
             + poserCarte(carte : Carte, cellule : Integer)
             + attaquer(autre : Joueur)
-            +ToString() : String;
+            + ToString() : String
 
         }
 
         class Robot extends Joueur{
             +<<Create>> Robot()
             + jouerTour()
+            + poserCarteRobot() : Boolean
             + ToString() : String
         }
 
-        Joueur *----> "1" Animal : m_pioche\nm_mainJoueur
-        Joueur *--> "1" typeCarte.Carte  : m_plateau
+        Joueur o----> "1" Animal : m_pioche\nm_mainJoueur
+        Joueur o--> "1" typeCarte.Carte  : m_plateau
         Partie .> Joueur : <<use>>
 
     }
 
     package affichage{
         class Affichage{
-            +{static} afficherCarte(carte : Carte)
+            + showCarte()
+            + placeDeck()
+            + pioche()
         }
 
-        Affichage .> typeCarte.Carte : <<use>>
+        Affichage o--> typeCarte.Carte : m_carte
     }
 }
 @enduml

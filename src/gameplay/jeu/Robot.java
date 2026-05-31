@@ -10,7 +10,6 @@ public class Robot extends Joueur{
     }
 
     public void jouerTour(){
-        System.out.println(getMain().toString());
         if (getMain().isEmpty()){
             piocher();
         }
@@ -18,21 +17,21 @@ public class Robot extends Joueur{
         int position = -1;
 
         for (int i = 0; i < getPlateau().length; i++){
-            // Vérifier si une carte a un PV nul
-
             if (getPlateau()[i] == null){
                 position = i;
                 break;
-            }
-
-            if (getPlateau()[i].getPV() == 0){
-                getPlateau()[i] = null;
             }
         }
 
 
         int carteSacrifiable = 0;
         Animal carte = null;
+
+        for (int i = 0; i < getPlateau().length; i++){
+            if (getPlateau()[i] != null) {
+                carteSacrifiable++;
+            }
+        }
 
         for (int i = 0; i < getMain().size(); i++){
             if (getMain().get(i).getGouttesSang() == 0){

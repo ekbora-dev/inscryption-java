@@ -22,8 +22,11 @@ public class Partie {
             player.piocher();
         }
 
+        System.out.println("Différence de score (balance) : " + m_differenceScore);
+
 
         while (true){
+            // On récupère la valeur absolue du score pour déterminer si la partie est terminé ou pas
             if (Math.abs(m_differenceScore) >= 5){
                 if (player.getScoreJoueur() > robot.getScoreJoueur()){
                     System.out.println("Vous gagnez la partie");
@@ -44,6 +47,7 @@ public class Partie {
             System.out.println("================================");
             player.afficherCarte();
             player.afficherMain();
+            System.out.println("Carte dans la pioche : " + player.getTaillePioche());
 
             System.out.println("Actions possible");
             System.out.println("[fin] Fin de votre tour");
@@ -80,9 +84,7 @@ public class Partie {
 
                         int cellule = Integer.parseInt(parties[0]);
                         int carte = Integer.parseInt(parties[1]);
-
-                        player.poserCarteRobot(player.getMain().get(carte), cellule);
-                        player.getMain().remove(carte);
+                        player.poserCarte(player.getMain().get(carte), cellule);
                         break;
                 }
             }

@@ -13,7 +13,7 @@ public class Joueur {
     private final ArrayList<Animal> m_mainJoueur = new ArrayList<>();
     private final Carte[] m_plateau = new Carte[4];
     private int m_scoreJoueur = 0;
-    private int os = 0;
+    private int m_os = 0;
 
     public Joueur(){
         m_pioche.push(new Ecureuil());
@@ -66,25 +66,41 @@ public class Joueur {
         }
     }
 
-    public boolean piocher(){
-        if (m_pioche.isEmpty()){
-            return false;
-        }
-        m_mainJoueur.add(m_pioche.pop());
-        return true;
+    public int getOs(){
+        return m_os;
     }
 
-    public boolean poserCarteRobot(Carte carte, int cellule) {
+    public int getTaillePioche(){
+        return m_pioche.size();
+    }
+
+    public void piocher(){
+        if (m_pioche.isEmpty()){
+            return;
+        }
+        m_mainJoueur.add(m_pioche.pop());
+    }
+
+    public void poserCarte(Animal carte, int cellule) {
         if (m_plateau[cellule] != null) {
-            return false;
+            return;
+        }
+
+
+        if (carte.getOs() > 0){
+            if (m_os >= carte.getOs()){
+                m_plateau[cellule] = carte;
+                m_mainJoueur.remove(carte);
+            }
         }
 
         if (carte.getGouttesSang() > 0) {
             int nbCarteASacrifier = 0;
+            int sacrificeRestant;
             while (nbCarteASacrifier < carte.getGouttesSang()) {
+                sacrificeRestant = carte.getGouttesSang() - nbCarteASacrifier;
                 Scanner sn = new Scanner(System.in);
-                afficherMain();
-                System.out.println("Attention, la carte " + carte.getNom() + " nécessite 1 ou plusieurs sacrifice ! Carte à sacrifier restante(s) : " + nbCarteASacrifier);
+                System.out.println("Attention, la carte " + carte.getNom() + " nécessite 1 ou plusieurs sacrifice ! Carte à sacrifier restante(s) : " + sacrificeRestant);
                 System.out.print("Saisir l'indice de la carte à sacrifier : ");
                 int index = Integer.parseInt(sn.next());
                 if (m_plateau[index] == null){
@@ -97,25 +113,27 @@ public class Joueur {
 
             if (nbCarteASacrifier >= carte.getGouttesSang()){
                 m_plateau[cellule] = carte;
-                return true;
-            }
-            else {
-                return false;
+                m_mainJoueur.remove(carte);
+                return;
             }
         }
 
         m_plateau[cellule] = carte;
-
-        return true;
+        m_mainJoueur.remove(carte);
     }
 
     public void attaquer(Joueur other){
         for (int i = 0; i < m_plateau.length; i++){
             if (m_plateau[i] != null){
-                if (other.m_plateau[i] != null){
-                    m_plateau[i].attaquer(other.m_plateau[i]);
-                    if (other.m_plateau[i].getPV() <= 0){
-                        other.m_plateau[i] = null;
+                if (other.m_plateau[i] != null) {
+                    if (m_plateau[i].getVolant()) {
+                        m_scoreJoueur += m_plateau[i].getAttaque();
+                    } else {
+                        m_plateau[i].attaquer(other.m_plateau[i]);
+                        if (other.m_plateau[i].getPV() <= 0) {
+                            other.m_plateau[i] = null;
+                            other.m_os++;
+                        }
                     }
                 } else{
                     m_scoreJoueur += m_plateau[i].getAttaque();
