@@ -16,7 +16,8 @@ package typeCarte{
         - m_gouttesDeSang : Integer
         - m_os : Integer
         - m_volant : Boolean
-        + <<Create>> Animal(nom : String, pointAttaque : Integer, PV : Integer, gouttesDeSang : Integer, os : Integer, volant : Boolean)
+        + <<Create>> Carte(nom : String, PV : Integer)
+        + <<Create>> Carte(nom : String, pointAttaque : Integer, PV : Integer, gouttesDeSang : Integer, os : Integer, volant : Boolean)
         + attaquer(other : Animal)
         + getNom() : String
         + getPV() : Integer
@@ -82,6 +83,7 @@ package gameplay{
         class Jeu {
             + <<Create>> Jeu()
             + demarrerJeuSansObstacle()
+            + demarrerJeuAvecObstacle()
         }
 
         Jeu .> Partie : <<use>>
@@ -99,7 +101,7 @@ package gameplay{
             + getScoreJoueur() : Integer
             + getPlateau()
             + getMain()
-            + getOs() : int
+            + getOs() : Integer
             + afficherCarte()
             + afficherMain()
             + piocher()
@@ -125,6 +127,7 @@ package gameplay{
 
     package affichage{
         class Affichage{
+            + <<Create>> Affichage()
             + showCarte()
             + placeDeck()
             + pioche()
