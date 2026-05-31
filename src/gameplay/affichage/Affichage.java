@@ -27,7 +27,23 @@ public class Affichage {
 
     }
 
-    public void placeDeck() {
+
+
+    public void Gameplay() {
+         String[] pioch = {
+                "[=============]" ,
+                        "|             |",
+                        "|    #####    |",
+                        "|    #   #    |",
+                        "|    #####    |",
+                        "|    #        |",
+                        "|    #        |",
+                        "|             |",
+                        "|             |",
+                        "[=============]"
+         };
+
+
         String[] lignesCarte = {
                 "#-------------#",
                 "|             |",
@@ -40,35 +56,24 @@ public class Affichage {
                 "|             |",
                 "#-------------#"
         };
-
         int nbLigneGrille = 3;
         int nbColonneGrille = 4;
         String espaceEntreCartes = "   ";
+        String espaceGrand = "           ";
 
         for (int grilleLigne = 0; grilleLigne < nbLigneGrille; grilleLigne++) {
             for (int i = 0; i < lignesCarte.length; i++) {
                 for (int grilleCol = 0; grilleCol < nbColonneGrille; grilleCol++) {
                     System.out.print(lignesCarte[i] + espaceEntreCartes);
                 }
+                // 2. Si on est sur la TOUTE PREMIÈRE ligne de la grille, on colle la pioche à côté
+                if (grilleLigne == 0) {
+                    System.out.print(espaceGrand + pioch[i]);
+                }
                 System.out.println();
             }
             System.out.println();
         }
-    }
-
-    public void pioche() {
-         String[] pioch = {
-                "[=============]" ,
-                        "|             |",
-                        "|    #####    |",
-                        "|    #   #    |",
-                        "|    #####    |",
-                        "|    #        |",
-                        "|    #        |",
-                        "|             |",
-                        "|             |",
-                        "[=============]"};
-
     }
 }
 
