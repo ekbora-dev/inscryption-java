@@ -74,6 +74,7 @@ public class Partie {
                         } else {
                             player.piocher();
                             piocher = true;
+                            player.afficherMain();
                         }
                         break;
                     case "placer":

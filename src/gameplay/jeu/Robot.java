@@ -72,7 +72,6 @@ public class Robot extends Joueur{
             System.out.println("Le robot passe son tour");
         }
         this.attaquer(m_other);
-
     }
 
     public void poserCarteRobot(Animal carte, int cellule) {
@@ -80,34 +79,33 @@ public class Robot extends Joueur{
             return;
         }
 
-        if (getOsJoueur() >= carte.getOs()){
+        if (carte.getGouttesSang() == 0 && carte.getOs() == 0) {
             getPlateau()[cellule] = Optional.of(carte);
             getMain().remove(carte);
-            return;
-        } else {
-            boolean os = osRobot(carte);
-
-            // Si la fonction renvoie true (nombre d'os suffisant pour poser la carte), alors on pose la carte
-            if (os){
-                getPlateau()[cellule] = Optional.of(carte);
-                getMain().remove(carte);
-                return;
-            }
         }
+
 
         if (carte.getGouttesSang() > 0) {
             boolean sacrifice = sacrificeRobot(carte);
 
             // Si la fonction renvoie true (sacrifice possible et fait), alors on pose la carte
-            if (sacrifice){
+            if (sacrifice) {
                 getPlateau()[cellule] = Optional.of(carte);
                 getMain().remove(carte);
-                return;
+
+            }
+        } else if (getOsJoueur() >= carte.getOs()) {
+            getPlateau()[cellule] = Optional.of(carte);
+            getMain().remove(carte);
+        } else {
+            boolean os = osRobot(carte);
+
+            // Si la fonction renvoie true (nombre d'os suffisant pour poser la carte), alors on pose la carte
+            if (os) {
+                getPlateau()[cellule] = Optional.of(carte);
+                getMain().remove(carte);
             }
         }
-
-        getPlateau()[cellule] = Optional.of(carte);
-        getMain().remove(carte);
     }
 
     private boolean sacrificeRobot(Animal carte){
