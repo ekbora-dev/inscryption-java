@@ -94,6 +94,7 @@ public class Joueur {
             if (m_os >= carte.getOs()){
                 m_plateau[cellule] = Optional.of(carte);
                 m_mainJoueur.remove(carte);
+                m_os -= carte.getOs();
             } else {
                 int nbCarteASacrifier = 0;
                 int sacrificeRestant;
@@ -110,6 +111,15 @@ public class Joueur {
                         m_os++;
                         nbCarteASacrifier++;
                     }
+                }
+
+                if (m_os < carte.getOs()){
+                    System.out.println("Pas assez de sacrifice pour poser la carte");
+                } else {
+                    m_plateau[cellule] = Optional.of(carte);
+                    m_mainJoueur.remove(carte);
+                    m_os -= carte.getOs();
+                    return;
                 }
             }
         }
@@ -136,7 +146,10 @@ public class Joueur {
                 m_plateau[cellule] = Optional.of(carte);
                 m_mainJoueur.remove(carte);
                 return;
+            } else{
+                System.out.println("Pas assez de sacrifice(s) !");
             }
+
         }
 
         m_plateau[cellule] = Optional.of(carte);
