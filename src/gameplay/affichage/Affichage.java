@@ -1,28 +1,81 @@
 package gameplay.affichage;
 
 import typeCarte.Animal;
+import typeCarte.Carte;
 import typeCarte.Obstacle;
 
 public class Affichage {
-    private Animal m_animal ;
-    private Obstacle m_obstacle;
-    public Affichage(Animal carteA, Obstacle carteO){
-        m_animal = carteA;
-        m_obstacle = carteO;
+    private Carte m_carte ;
+    public Affichage(Carte carte){
+        m_carte = carte;
     }
+
+    
 
 
     public void showCarte(){
-        System.out.print ("0-------------0" + "\n" +
-                          "|             |\n" +
-                          "|-------------|\n" +
-                          "|             |\n" +
-                          "|             |\n" +
-                          "|             |\n" +
-                          "|             |\n" +
-                          "|             |\n" +
-                          "|             |\n" +
-                          "0-------------0");
+        String[] carte = {"0-------------0\n",
+                "|             |\n",
+                "|-------------|\n" ,
+                "|             |\n" ,
+                "|             |\n" ,
+                "|             |\n",
+                "|             |\n",
+                "|             |\n",
+                "|             |\n",
+                "0-------------0\n\n"};
 
     }
+
+
+
+    public void Gameplay() {
+         String[] pioch = {
+                "[=============]" ,
+                        "|             |",
+                        "|    #####    |",
+                        "|    #   #    |",
+                        "|    #####    |",
+                        "|    #        |",
+                        "|    #        |",
+                        "|             |",
+                        "|             |",
+                        "[=============]"
+         };
+
+
+        String[] lignesCarte = {
+                "#-------------#",
+                "|             |",
+                "|             |",
+                "|             |",
+                "|             |",
+                "|             |",
+                "|             |",
+                "|             |",
+                "|             |",
+                "#-------------#"
+        };
+        int nbLigneGrille = 3;
+        int nbColonneGrille = 4;
+        String espaceEntreCartes = "   ";
+        String espaceGrand = "           ";
+
+        for (int grilleLigne = 0; grilleLigne < nbLigneGrille; grilleLigne++) {
+            for (int i = 0; i < lignesCarte.length; i++) {
+                for (int grilleCol = 0; grilleCol < nbColonneGrille; grilleCol++) {
+                    System.out.print(lignesCarte[i] + espaceEntreCartes);
+                }
+                // 2. Si on est sur la TOUTE PREMIÈRE ligne de la grille, on colle la pioche à côté
+                if (grilleLigne == 0) {
+                    System.out.print(espaceGrand + pioch[i]);
+                }
+                System.out.println();
+            }
+            System.out.println();
+        }
+    }
 }
+
+
+
