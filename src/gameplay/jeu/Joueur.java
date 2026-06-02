@@ -3,17 +3,14 @@ package gameplay.jeu;
 import carteAnimal.*;
 import typeCarte.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
-import java.util.Stack;
+import java.util.*;
 
 public class Joueur {
     private final Stack<Animal> m_pioche = new Stack<>();
     private final ArrayList<Animal> m_mainJoueur = new ArrayList<>();
-    private final Carte[] m_plateau = new Carte[4];
+    private final Optional<Carte>[] m_plateau = new Optional[4];
     private int m_scoreJoueur = 0;
-    private int m_os = 0;
+    protected int m_os = 0;
 
     public Joueur(){
         m_pioche.push(new Ecureuil());
@@ -31,13 +28,17 @@ public class Joueur {
         m_pioche.push(new Ecureuil());
         m_pioche.push(new Ecureuil());
         m_pioche.push(new Ecureuil());
+
+        for (int i = 0; i < m_plateau.length; i++) {
+            m_plateau[i] = Optional.empty();
+        }
     }
 
     public int getScoreJoueur(){
         return m_scoreJoueur;
     }
 
-    public Carte[] getPlateau(){
+    public Optional<Carte>[] getPlateau(){
         return m_plateau;
     }
     public ArrayList<Animal> getMain(){
@@ -46,15 +47,17 @@ public class Joueur {
 
     public void afficherCarte(){
         for (int i = 0; i < m_plateau.length; i++){
-            if (m_plateau[i] == null){
-                System.out.println("Case n°" + i + " - Pas de carte -");
-                continue;
-            }
-            if (m_plateau[i].getVolant()){
-                System.out.println("Case n°" + i + " - " + m_plateau[i].getNom() + " : PV : " + m_plateau[i].getPV() + " - Att : " + m_plateau[i].getAttaque() + " - Volante");
+            if (m_plateau[i].isPresent()){
+                Carte carte = m_plateau[i].get();
+                if (carte.getVolant()){
+                    System.out.println("Case n°" + i + " - " + carte.getNom() + " : PV : " + carte.getPV() + " - Att : " + carte.getAttaque() + " - Volante");
+                } else {
+                    System.out.println("Case n°" + i + " - " + carte.getNom() + " : PV : " + carte.getPV() + " - Att : " + carte.getAttaque());
+                }
             } else {
-                System.out.println("Case n°" + i + " - " + m_plateau[i].getNom() + " : PV : " + m_plateau[i].getPV() + " - Att : " + m_plateau[i].getAttaque());
+                System.out.println("Case n°" + i + " - Pas de carte -");
             }
+
         }
     }
 
@@ -66,7 +69,7 @@ public class Joueur {
         }
     }
 
-    public int getOs(){
+    public int getOsJoueur(){
         return m_os;
     }
 
@@ -82,15 +85,32 @@ public class Joueur {
     }
 
     public void poserCarte(Animal carte, int cellule) {
-        if (m_plateau[cellule] != null) {
+        if (m_plateau[cellule].isPresent()) {
             return;
         }
 
 
         if (carte.getOs() > 0){
             if (m_os >= carte.getOs()){
-                m_plateau[cellule] = carte;
+                m_plateau[cellule] = Optional.of(carte);
                 m_mainJoueur.remove(carte);
+            } else {
+                int nbCarteASacrifier = 0;
+                int sacrificeRestant;
+                while (nbCarteASacrifier < carte.getOs()) {
+                    sacrificeRestant = carte.getOs() - m_os - nbCarteASacrifier;
+                    Scanner sn = new Scanner(System.in);
+                    System.out.println("Attention, la carte " + carte.getNom() + " nécessite 1 ou plusieurs sacrifices ! Carte à sacrifier restante(s) : " + sacrificeRestant);
+                    System.out.print("Saisir l'indice de la carte à sacrifier : ");
+                    int index = Integer.parseInt(sn.next());
+                    if (m_plateau[index].isEmpty()){
+                        System.out.println("Cette case est déja vide !");
+                    } else {
+                        m_plateau[index] = Optional.empty();
+                        m_os++;
+                        nbCarteASacrifier++;
+                    }
+                }
             }
         }
 
@@ -100,43 +120,45 @@ public class Joueur {
             while (nbCarteASacrifier < carte.getGouttesSang()) {
                 sacrificeRestant = carte.getGouttesSang() - nbCarteASacrifier;
                 Scanner sn = new Scanner(System.in);
-                System.out.println("Attention, la carte " + carte.getNom() + " nécessite 1 ou plusieurs sacrifice ! Carte à sacrifier restante(s) : " + sacrificeRestant);
+                System.out.println("Attention, la carte " + carte.getNom() + " nécessite 1 ou plusieurs sacrifices ! Carte à sacrifier restante(s) : " + sacrificeRestant);
                 System.out.print("Saisir l'indice de la carte à sacrifier : ");
                 int index = Integer.parseInt(sn.next());
-                if (m_plateau[index] == null){
+                if (m_plateau[index].isEmpty()){
                     System.out.println("Cette case est déja vide !");
                 } else {
-                    m_plateau[index] = null;
+                    m_plateau[index] = Optional.empty();
+                    m_os++;
                     nbCarteASacrifier++;
                 }
             }
 
             if (nbCarteASacrifier >= carte.getGouttesSang()){
-                m_plateau[cellule] = carte;
+                m_plateau[cellule] = Optional.of(carte);
                 m_mainJoueur.remove(carte);
                 return;
             }
         }
 
-        m_plateau[cellule] = carte;
+        m_plateau[cellule] = Optional.of(carte);
         m_mainJoueur.remove(carte);
     }
 
     public void attaquer(Joueur other){
         for (int i = 0; i < m_plateau.length; i++){
-            if (m_plateau[i] != null){
-                if (other.m_plateau[i] != null) {
-                    if (m_plateau[i].getVolant()) {
-                        m_scoreJoueur += m_plateau[i].getAttaque();
+            if (m_plateau[i].isPresent()){
+                Carte carte = m_plateau[i].get();
+                if (other.m_plateau[i].isPresent()) {
+                    if (carte.getVolant()) {
+                        m_scoreJoueur += carte.getAttaque();
                     } else {
-                        m_plateau[i].attaquer(other.m_plateau[i]);
-                        if (other.m_plateau[i].getPV() <= 0) {
-                            other.m_plateau[i] = null;
+                        carte.attaquer(other.m_plateau[i].get());
+                        if (other.m_plateau[i].get().getPV() <= 0) {
+                            other.m_plateau[i] = Optional.empty();
                             other.m_os++;
                         }
                     }
                 } else{
-                    m_scoreJoueur += m_plateau[i].getAttaque();
+                    m_scoreJoueur += m_plateau[i].get().getAttaque();
                 }
             }
         }

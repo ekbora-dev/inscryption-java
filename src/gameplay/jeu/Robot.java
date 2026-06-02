@@ -2,6 +2,8 @@ package gameplay.jeu;
 
 import typeCarte.Animal;
 
+import java.util.Optional;
+
 public class Robot extends Joueur{
     private final Joueur m_other;
     public Robot(Joueur other){
@@ -17,7 +19,7 @@ public class Robot extends Joueur{
         int position = -1;
 
         for (int i = 0; i < getPlateau().length; i++){
-            if (getPlateau()[i] == null){
+            if (getPlateau()[i].isEmpty()){
                 position = i;
                 break;
             }
@@ -28,7 +30,7 @@ public class Robot extends Joueur{
         Animal carte = null;
 
         for (int i = 0; i < getPlateau().length; i++){
-            if (getPlateau()[i] != null) {
+            if (getPlateau()[i].isPresent()) {
                 carteSacrifiable++;
             }
         }
@@ -48,7 +50,7 @@ public class Robot extends Joueur{
         }
 
         for (int i = 0; i < getPlateau().length; i++){
-            if (getPlateau()[i] != null){
+            if (getPlateau()[i].isPresent()){
                 carteSacrifiable++;
                 if (carte != null){
                     if (carteSacrifiable == carte.getGouttesSang()){
@@ -73,41 +75,80 @@ public class Robot extends Joueur{
 
     }
 
-    public boolean poserCarteRobot(Animal carte, int cellule) {
-        if (getPlateau()[cellule] != null) {
-            return false;
+    public void poserCarteRobot(Animal carte, int cellule) {
+        if (getPlateau()[cellule].isPresent()) {
+            return;
+        }
+
+        if (getOsJoueur() >= carte.getOs()){
+            getPlateau()[cellule] = Optional.of(carte);
+            getMain().remove(carte);
+            return;
+        } else {
+            boolean os = osRobot(carte);
+
+            // Si la fonction renvoie true (nombre d'os suffisant pour poser la carte), alors on pose la carte
+            if (os){
+                getPlateau()[cellule] = Optional.of(carte);
+                getMain().remove(carte);
+                return;
+            }
         }
 
         if (carte.getGouttesSang() > 0) {
-            int nbCarteASacrifier = 0;
-            for (int i = 0; i < getPlateau().length; i++){
-                if (getPlateau()[i] != null){
-                    nbCarteASacrifier++;
-                    if (nbCarteASacrifier == carte.getGouttesSang()){
-                        break;
-                    }
-                }
-            }
+            boolean sacrifice = sacrificeRobot(carte);
 
-            if (nbCarteASacrifier == carte.getGouttesSang()){
-                for (int i = 0; i < nbCarteASacrifier; i++){
-                    if (getPlateau()[i] != null){
-                        getPlateau()[i] = null;
-                    }
-                }
-
-                getPlateau()[cellule] = carte;
+            // Si la fonction renvoie true (sacrifice possible et fait), alors on pose la carte
+            if (sacrifice){
+                getPlateau()[cellule] = Optional.of(carte);
                 getMain().remove(carte);
-
-                return true;
+                return;
             }
-            return false;
         }
 
-        getPlateau()[cellule] = carte;
+        getPlateau()[cellule] = Optional.of(carte);
         getMain().remove(carte);
+    }
 
-        return true;
+    private boolean sacrificeRobot(Animal carte){
+        int nbCarteASacrifier = 0;
+        for (int i = 0; i < getPlateau().length; i++){
+            if (getPlateau()[i].isPresent()){
+                nbCarteASacrifier++;
+                if (nbCarteASacrifier == carte.getGouttesSang()){
+                    break;
+                }
+            }
+        }
+
+        if (nbCarteASacrifier == carte.getGouttesSang()){
+            for (int i = 0; i < nbCarteASacrifier; i++){
+                if (getPlateau()[i].isPresent()){
+                    getPlateau()[i] = Optional.empty();
+                    m_os++;
+                }
+            }
+
+            return true;
+        }
+        return false;
+    }
+
+    // Fonction permettant de faire des sacrifices pour récupérer des os
+    private boolean osRobot(Animal carte){
+        for (int i = 0; i < getPlateau().length; i++){
+            if (getPlateau()[i].isPresent()){
+                getPlateau()[i] = Optional.empty();
+                m_os++;
+            }
+
+            if (m_os == carte.getOs()) {
+                m_os -= carte.getOs();
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override

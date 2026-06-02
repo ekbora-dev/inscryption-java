@@ -22,10 +22,10 @@ public class Partie {
             player.piocher();
         }
 
-        System.out.println("Différence de score (balance) : " + m_differenceScore);
-
-
+        // Ce while correspond à 1 tour complet (Robot + Joueur).
         while (true){
+            System.out.println("Différence de score (balance) : " + m_differenceScore);
+
             // On récupère la valeur absolue du score pour déterminer si la partie est terminé ou pas
             if (Math.abs(m_differenceScore) >= 5){
                 if (player.getScoreJoueur() > robot.getScoreJoueur()){
@@ -55,6 +55,8 @@ public class Partie {
             System.out.println("[placer] Placer une carte sur une cellule");
             boolean tour = true;
             boolean piocher = false;
+
+            // Tour du joueur
             while (tour){
                 Scanner scanner = new Scanner(System.in);
                 System.out.print("vous@partie:~$ ");
