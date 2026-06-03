@@ -86,70 +86,32 @@ public class Joueur {
 
     public void poserCarte(Animal carte, int cellule) {
         if (m_plateau[cellule].isPresent()) {
+            System.out.println("Case occupé !");
             return;
         }
 
-
         if (carte.getOs() > 0){
-            if (m_os >= carte.getOs()){
+            boolean cartePosable = poserCarteOs(carte);
+
+            if (cartePosable) {
                 m_plateau[cellule] = Optional.of(carte);
                 m_mainJoueur.remove(carte);
                 m_os -= carte.getOs();
             } else {
-                int nbCarteASacrifier = 0;
-                int sacrificeRestant;
-                while (nbCarteASacrifier < carte.getOs()) {
-                    sacrificeRestant = carte.getOs() - m_os - nbCarteASacrifier;
-                    Scanner sn = new Scanner(System.in);
-                    System.out.println("Attention, la carte " + carte.getNom() + " nécessite 1 ou plusieurs sacrifices ! Carte à sacrifier restante(s) : " + sacrificeRestant);
-                    System.out.print("Saisir l'indice de la carte à sacrifier : ");
-                    int index = Integer.parseInt(sn.next());
-                    if (m_plateau[index].isEmpty()){
-                        System.out.println("Cette case est déja vide !");
-                    } else {
-                        m_plateau[index] = Optional.empty();
-                        m_os++;
-                        nbCarteASacrifier++;
-                    }
-                }
-
-                if (m_os < carte.getOs()){
-                    System.out.println("Pas assez de sacrifice pour poser la carte");
-                } else {
-                    m_plateau[cellule] = Optional.of(carte);
-                    m_mainJoueur.remove(carte);
-                    m_os -= carte.getOs();
-                    return;
-                }
+                return;
             }
         }
 
         if (carte.getGouttesSang() > 0) {
-            int nbCarteASacrifier = 0;
-            int sacrificeRestant;
-            while (nbCarteASacrifier < carte.getGouttesSang()) {
-                sacrificeRestant = carte.getGouttesSang() - nbCarteASacrifier;
-                Scanner sn = new Scanner(System.in);
-                System.out.println("Attention, la carte " + carte.getNom() + " nécessite 1 ou plusieurs sacrifices ! Carte à sacrifier restante(s) : " + sacrificeRestant);
-                System.out.print("Saisir l'indice de la carte à sacrifier : ");
-                int index = Integer.parseInt(sn.next());
-                if (m_plateau[index].isEmpty()){
-                    System.out.println("Cette case est déja vide !");
-                } else {
-                    m_plateau[index] = Optional.empty();
-                    m_os++;
-                    nbCarteASacrifier++;
-                }
-            }
+            boolean cartePosable = poserCarteSang(carte);
 
-            if (nbCarteASacrifier >= carte.getGouttesSang()){
+            if (cartePosable){
                 m_plateau[cellule] = Optional.of(carte);
                 m_mainJoueur.remove(carte);
+                return; // On sort de la fonction pour éviter de placer une carte en double
+            } else {
                 return;
-            } else{
-                System.out.println("Pas assez de sacrifice(s) !");
             }
-
         }
 
         m_plateau[cellule] = Optional.of(carte);
@@ -175,6 +137,64 @@ public class Joueur {
                 }
             }
         }
+    }
+
+    private boolean poserCarteOs(Carte carte){
+        if (m_os >= carte.getOs()){
+            return true;
+        } else {
+            int nbCarteASacrifier = 0;
+            int sacrificeRestant;
+            while (nbCarteASacrifier < carte.getOs()) {
+                sacrificeRestant = carte.getOs() - m_os - nbCarteASacrifier; // On soustrait les os du joueur pour compléter les os manquants
+                nbCarteASacrifier = sacrificeCarte(carte, nbCarteASacrifier, sacrificeRestant);
+            }
+
+            if (m_os < carte.getOs()){
+                System.out.println("Pas assez de sacrifice pour poser la carte");
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+
+    private int sacrificeCarte(Carte carte, int nbCarteASacrifier, int sacrificeRestant) {
+        Scanner sn = new Scanner(System.in);
+        System.out.println("Attention, la carte " + carte.getNom() + " nécessite 1 ou plusieurs sacrifices ! Carte à sacrifier restante(s) : " + sacrificeRestant);
+        System.out.print("Saisir l'indice de la carte à sacrifier : ");
+        int index = Integer.parseInt(sn.next());
+        if (m_plateau[index].isEmpty()){
+            System.out.println("Cette case est vide !");
+        } else {
+            m_plateau[index] = Optional.empty();
+            m_os++;
+            nbCarteASacrifier++;
+        }
+        return nbCarteASacrifier;
+    }
+
+    private boolean poserCarteSang(Carte carte){
+        int carteSacrifiableTotal = 0;
+        for (int i = 0; i < m_plateau.length; i++){
+            if (m_plateau[i].isPresent()){
+                carteSacrifiableTotal += m_plateau[i].get().getGouttesSang();
+            }
+        }
+
+        if (carteSacrifiableTotal < carte.getGouttesSang()){
+            System.out.println("Impossible de poser cette carte, vous n'avez pas assez de carte à sacrifier");
+            return false;
+        }
+
+        int nbCarteASacrifier = 0;
+        int sacrificeRestant;
+        while (nbCarteASacrifier < m_plateau.length) {
+            sacrificeRestant = carte.getGouttesSang() - nbCarteASacrifier;
+            nbCarteASacrifier = sacrificeCarte(carte, nbCarteASacrifier, sacrificeRestant);
+        }
+
+        return true;
     }
 
     @Override
