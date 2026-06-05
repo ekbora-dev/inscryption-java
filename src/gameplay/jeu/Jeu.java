@@ -2,7 +2,7 @@ package gameplay.jeu;
 
 public class Jeu {
 
-    public void demarrerJeuSansObstacle(){
+    public void demarrerJeuSansObstacle() throws Exception {
         String vainqueur;
         int compteurRobot = 0;
         int compteurJoueur = 0;

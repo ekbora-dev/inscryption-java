@@ -1,5 +1,6 @@
 package gameplay.jeu;
 
+import gameplay.affichage.Affichage;
 import typeCarte.Carte;
 
 import java.util.Scanner;
@@ -10,7 +11,7 @@ public class Partie {
 
     }
 
-    public String demarrerPartieSansObstacle(){
+    public String demarrerPartieSansObstacle() throws Exception {
         Joueur player = new Joueur();
         Robot robot = new Robot(player);
 
@@ -39,15 +40,15 @@ public class Partie {
 
             robot.jouerTour();
 
-            robot.afficherCarte();
+            Affichage.afficherPlateau(robot.getPlateau());
             System.out.println("================================");
             for (int i = 0; i < carteAuCentre.length; i++){
                 System.out.println("Carte du centre");
             }
             System.out.println("================================");
-            player.afficherCarte();
-            player.afficherMain();
-            System.out.println("Carte dans la pioche : " + player.getTaillePioche());
+            Affichage.afficherPlateau(player.getPlateau());
+            Affichage.afficherMain(player.getMain());
+            System.out.println("Carte dans la pioche : " + player.getSizePioche());
 
             System.out.println("Actions possible");
             System.out.println("[fin] Fin de votre tour");
@@ -74,21 +75,26 @@ public class Partie {
                         } else {
                             player.piocher();
                             piocher = true;
-                            player.afficherMain();
+                            Affichage.afficherMain(player.getMain());
                         }
                         break;
                     case "placer":
-                        System.out.println("Format attendu : <cellule> <numéroCarte>");
-                        Scanner sn = new Scanner(System.in);
-                        System.out.print("vous@partie:~$ ");
-                        String valeur = sn.nextLine();
+                        try{
+                            System.out.println("Format attendu : <cellule> <numéroCarte>");
+                            Scanner sn = new Scanner(System.in);
+                            System.out.print("vous@partie:~$ ");
+                            String valeur = sn.nextLine();
 
-                        String[] parties = valeur.split(" ");
+                            String[] parties = valeur.split(" ");
 
-                        int cellule = Integer.parseInt(parties[0]);
-                        int carte = Integer.parseInt(parties[1]);
-                        player.poserCarte(player.getMain().get(carte), cellule);
-                        break;
+                            int cellule = Integer.parseInt(parties[0]);
+                            int carte = Integer.parseInt(parties[1]);
+                            player.poserCarte(player.getMain().get(carte), cellule);
+                            break;
+                        }
+                        catch (IndexOutOfBoundsException e){
+                            System.out.println("Vous sortez du plateau ! Annulation de l'action");
+                        }
                 }
             }
             player.attaquer(robot);

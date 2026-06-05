@@ -1,37 +1,22 @@
 package gameplay.jeu;
 
-import carteAnimal.*;
 import typeCarte.*;
 
 import java.util.*;
 
 public class Joueur {
-    private final Stack<Animal> m_pioche = new Stack<>();
+    private final Pioche m_pioche = new Pioche(this);
     private final ArrayList<Animal> m_mainJoueur = new ArrayList<>();
     private final Optional<Carte>[] m_plateau = new Optional[4];
     private int m_scoreJoueur = 0;
     protected int m_os = 0;
 
     public Joueur(){
-        m_pioche.push(new Ecureuil());
-        m_pioche.push(new Ecureuil());
-        m_pioche.push(new Punaise());
-        m_pioche.push(new Chat());
-        m_pioche.push(new Grizzly());
-        m_pioche.push(new Moineau());
-        m_pioche.push(new Coyote());
-        m_pioche.push(new Louveteau());
-        m_pioche.push(new Loup());
-        m_pioche.push(new Hermine());
-        m_pioche.push(new Ecureuil());
-        m_pioche.push(new Corbeau());
-        m_pioche.push(new Ecureuil());
-        m_pioche.push(new Ecureuil());
-        m_pioche.push(new Ecureuil());
-
         for (int i = 0; i < m_plateau.length; i++) {
             m_plateau[i] = Optional.empty();
         }
+
+        m_pioche.initPioche();
     }
 
     public int getScoreJoueur(){
@@ -45,57 +30,24 @@ public class Joueur {
         return m_mainJoueur;
     }
 
-    public void afficherCarte(){
-        for (int i = 0; i < m_plateau.length; i++){
-            if (m_plateau[i].isPresent()){
-                Carte carte = m_plateau[i].get();
-                if (carte.getVolant()){
-                    System.out.println("Case n°" + i + " - " + carte.getNom() + " : PV : " + carte.getPV() + " - Att : " + carte.getAttaque() + " - Volante");
-                } else {
-                    System.out.println("Case n°" + i + " - " + carte.getNom() + " : PV : " + carte.getPV() + " - Att : " + carte.getAttaque());
-                }
-            } else {
-                System.out.println("Case n°" + i + " - Pas de carte -");
-            }
-
-        }
-    }
-
-    public void afficherMain(){
-        System.out.println("Votre main");
-        for (int i = 0; i < m_mainJoueur.size(); i++){
-            Animal carteActuelle = m_mainJoueur.get(i);
-            System.out.println("\t" + i + ". " + carteActuelle.getNom() +" PV: " + carteActuelle.getPV() + " Att: " + carteActuelle.getAttaque() + " Gouttes de sang: " + carteActuelle.getGouttesSang() + " Os : " + carteActuelle.getOs() + " Volante : " + (carteActuelle.getVolant() ? "Oui" : "Non"));
-        }
-    }
-
     public int getOsJoueur(){
         return m_os;
     }
 
-    public int getTaillePioche(){
-        return m_pioche.size();
-    }
-
     public void piocher(){
-        if (m_pioche.isEmpty()){
-            return;
-        }
-        m_mainJoueur.add(m_pioche.pop());
+        m_pioche.piocher();
     }
 
-    public void poserCarte(Animal carte, int cellule) {
-        if (m_plateau[cellule].isPresent()) {
-            System.out.println("Case occupé !");
-            return;
-        }
+    public int getSizePioche(){
+        return m_pioche.getTaillePioche();
+    }
 
+    public void poserCarte(Animal carte, int cellule) throws Exception {
         if (carte.getOs() > 0){
             boolean cartePosable = poserCarteOs(carte);
 
             if (cartePosable) {
-                m_plateau[cellule] = Optional.of(carte);
-                m_mainJoueur.remove(carte);
+                placerCarte(carte, cellule);
                 m_os -= carte.getOs();
             } else {
                 return;
@@ -106,40 +58,49 @@ public class Joueur {
             boolean cartePosable = poserCarteSang(carte);
 
             if (cartePosable){
-                m_plateau[cellule] = Optional.of(carte);
-                m_mainJoueur.remove(carte);
+                placerCarte(carte, cellule);
                 return; // On sort de la fonction pour éviter de placer une carte en double
             } else {
                 return;
             }
         }
 
-        m_plateau[cellule] = Optional.of(carte);
-        m_mainJoueur.remove(carte);
+        placerCarte(carte, cellule);
     }
 
     public void attaquer(Joueur other){
         for (int i = 0; i < m_plateau.length; i++){
-            if (m_plateau[i].isPresent()){
-                Carte carte = m_plateau[i].get();
-                if (other.m_plateau[i].isPresent()) {
-                    if (carte.getVolant()) {
-                        m_scoreJoueur += carte.getAttaque();
-                    } else {
-                        carte.attaquer(other.m_plateau[i].get());
-                        if (other.m_plateau[i].get().getPV() <= 0) {
-                            other.m_plateau[i] = Optional.empty();
-                            other.m_os++;
-                        }
-                    }
-                } else{
-                    m_scoreJoueur += m_plateau[i].get().getAttaque();
-                }
+            if (m_plateau[i].isEmpty()) {
+                continue;
+            }
+
+            Carte attaquant = m_plateau[i].get();
+
+            if (attaquant.getVolant() || other.m_plateau[i].isEmpty()) {
+                m_scoreJoueur += attaquant.getAttaque();
+                continue;
+            }
+
+            Carte defenseur = other.m_plateau[i].get();
+            attaquant.attaquer(defenseur);
+
+            if (defenseur.getPV() <= 0) {
+                other.m_plateau[i] = Optional.empty();
+                other.m_os++;
             }
         }
     }
 
-    private boolean poserCarteOs(Carte carte){
+    public void placerCarte(Animal carte, int cellule) {
+        if (m_plateau[cellule].isPresent()) {
+            System.out.println("Case occupé !");
+            return;
+        }
+        m_plateau[cellule] = Optional.of(carte);
+        m_mainJoueur.remove(carte);
+    }
+
+    private boolean poserCarteOs(Carte carte) throws Exception {
         if (m_os >= carte.getOs()){
             return true;
         } else {
@@ -159,26 +120,33 @@ public class Joueur {
         }
     }
 
-    private int sacrificeCarte(Carte carte, int nbCarteASacrifier, int sacrificeRestant) {
+    private int sacrificeCarte(Carte carte, int nbCarteASacrifier, int sacrificeRestant) throws Exception {
+
         Scanner sn = new Scanner(System.in);
         System.out.println("Attention, la carte " + carte.getNom() + " nécessite 1 ou plusieurs sacrifices ! Carte à sacrifier restante(s) : " + sacrificeRestant);
         System.out.print("Saisir l'indice de la carte à sacrifier : ");
         int index = Integer.parseInt(sn.next());
-        if (m_plateau[index].isEmpty()){
-            System.out.println("Cette case est vide !");
-        } else {
-            m_plateau[index] = Optional.empty();
-            m_os++;
-            nbCarteASacrifier++;
+        try {
+            if (m_plateau[index].isEmpty()) {
+                System.out.println("Cette case est vide !");
+            } else {
+                m_plateau[index] = Optional.empty();
+                m_os++;
+                nbCarteASacrifier++;
+            }
         }
+        catch (Exception e){
+            throw new Exception("Erreur : Vous sortez du plateau !");
+        }
+
         return nbCarteASacrifier;
     }
 
-    private boolean poserCarteSang(Carte carte){
+    private boolean poserCarteSang(Carte carte) throws Exception {
         int carteSacrifiableTotal = 0;
-        for (int i = 0; i < m_plateau.length; i++){
-            if (m_plateau[i].isPresent()){
-                carteSacrifiableTotal += m_plateau[i].get().getGouttesSang();
+        for (Optional<Carte> casePlateau : m_plateau) {
+            if (casePlateau.isPresent()) {
+                carteSacrifiableTotal += casePlateau.get().getGouttesSang();
             }
         }
 

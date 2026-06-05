@@ -2,77 +2,34 @@ package gameplay.affichage;
 
 import typeCarte.Animal;
 import typeCarte.Carte;
-import typeCarte.Obstacle;
+
+import java.util.ArrayList;
+import java.util.Optional;
 
 public class Affichage {
-    private Carte m_carte ;
-    public Affichage(Carte carte){
-        m_carte = carte;
-    }
+    public Affichage(){}
 
-    
-
-
-    public void showCarte(){
-        String[] carte = {"0-------------0\n",
-                "|             |\n",
-                "|-------------|\n" ,
-                "|             |\n" ,
-                "|             |\n" ,
-                "|             |\n",
-                "|             |\n",
-                "|             |\n",
-                "|             |\n",
-                "0-------------0\n\n"};
-
-    }
-
-
-
-    public void Gameplay() {
-         String[] pioch = {
-                "[=============]" ,
-                        "|             |",
-                        "|    #####    |",
-                        "|    #   #    |",
-                        "|    #####    |",
-                        "|    #        |",
-                        "|    #        |",
-                        "|             |",
-                        "|             |",
-                        "[=============]"
-         };
-
-
-        String[] lignesCarte = {
-                "#-------------#",
-                "|             |",
-                "|             |",
-                "|             |",
-                "|             |",
-                "|             |",
-                "|             |",
-                "|             |",
-                "|             |",
-                "#-------------#"
-        };
-        int nbLigneGrille = 3;
-        int nbColonneGrille = 4;
-        String espaceEntreCartes = "   ";
-        String espaceGrand = "           ";
-
-        for (int grilleLigne = 0; grilleLigne < nbLigneGrille; grilleLigne++) {
-            for (int i = 0; i < lignesCarte.length; i++) {
-                for (int grilleCol = 0; grilleCol < nbColonneGrille; grilleCol++) {
-                    System.out.print(lignesCarte[i] + espaceEntreCartes);
+    public static void afficherPlateau(Optional<Carte>[] cartes){
+        for (int i = 0; i < cartes.length; i++){
+            if (cartes[i].isPresent()){
+                Carte carte = cartes[i].get();
+                if (carte.getVolant()){
+                    System.out.println("Case n°" + i + " - " + carte.getNom() + " : PV : " + carte.getPV() + " - Att : " + carte.getAttaque() + " - Volante");
+                } else {
+                    System.out.println("Case n°" + i + " - " + carte.getNom() + " : PV : " + carte.getPV() + " - Att : " + carte.getAttaque());
                 }
-                // 2. Si on est sur la TOUTE PREMIÈRE ligne de la grille, on colle la pioche à côté
-                if (grilleLigne == 0) {
-                    System.out.print(espaceGrand + pioch[i]);
-                }
-                System.out.println();
+            } else {
+                System.out.println("Case n°" + i + " - Pas de carte -");
             }
-            System.out.println();
+
+        }
+    }
+
+    public static void afficherMain(ArrayList<Animal> cartes){
+        System.out.println("Votre main");
+        for (int i = 0; i < cartes.size(); i++){
+            Animal carteActuelle = cartes.get(i);
+            System.out.println("\t" + i + ". " + carteActuelle.getNom() +" PV: " + carteActuelle.getPV() + " Att: " + carteActuelle.getAttaque() + " Gouttes de sang: " + carteActuelle.getGouttesSang() + " Os : " + carteActuelle.getOs() + " Volante : " + (carteActuelle.getVolant() ? "Oui" : "Non"));
         }
     }
 }
