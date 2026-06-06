@@ -3,8 +3,8 @@ package obstacles;
 
 import typeCarte.Obstacle;
 
-public class Roche extends Obstacle {
-    public Roche (){
+public class Rocher extends Obstacle {
+    public Rocher(){
         super(5,"rocher");
     }
 

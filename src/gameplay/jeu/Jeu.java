@@ -2,7 +2,7 @@ package gameplay.jeu;
 
 public class Jeu {
 
-    public void demarrerJeuSansObstacle() throws Exception {
+    public void demarrerJeu() throws Exception {
         String vainqueur;
         int compteurRobot = 0;
         int compteurJoueur = 0;
@@ -10,7 +10,7 @@ public class Jeu {
             int numPartie = i+1;
             System.out.println("=====DEBUT DE LA PARTIE n°" + numPartie + "=====");
             Partie partie = new Partie();
-            vainqueur = partie.demarrerPartieSansObstacle();
+            vainqueur = partie.demarrerPartie();
 
             if (vainqueur.equals("Robot")){
                 compteurRobot++;

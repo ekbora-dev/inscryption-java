@@ -1,8 +1,11 @@
 package gameplay.jeu;
 
+import factory.CarteFactory;
 import gameplay.affichage.Affichage;
+import obstacles.Rocher;
 import typeCarte.Carte;
 
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Partie {
@@ -11,7 +14,7 @@ public class Partie {
 
     }
 
-    public String demarrerPartieSansObstacle() throws Exception {
+    public String demarrerPartie() throws Exception {
         Joueur player = new Joueur();
         Robot robot = new Robot(player);
 
@@ -22,6 +25,9 @@ public class Partie {
             robot.piocher();
             player.piocher();
         }
+
+        player.getPlateau()[2] = Optional.of(CarteFactory.createRocher());
+        robot.getPlateau()[1] = Optional.of(CarteFactory.createSapin());
 
         // Ce while correspond à 1 tour complet (Robot + Joueur).
         while (true){
@@ -100,9 +106,6 @@ public class Partie {
             player.attaquer(robot);
             m_differenceScore = player.getScoreJoueur() - robot.getScoreJoueur();
         }
-    }
-
-    public void demarrerPartieAvecObstacle() {
     }
 
     @Override
