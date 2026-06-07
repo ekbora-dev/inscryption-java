@@ -100,7 +100,7 @@ public class Joueur {
         m_mainJoueur.remove(carte);
     }
 
-    private boolean poserCarteOs(Carte carte) throws Exception {
+    private boolean poserCarteOs(Animal carte) throws Exception {
         if (m_os >= carte.getOs()){
             return true;
         } else {
@@ -120,7 +120,7 @@ public class Joueur {
         }
     }
 
-    private int sacrificeCarte(Carte carte, int nbCarteASacrifier, int sacrificeRestant) throws Exception {
+    private int sacrificeCarte(Animal carte, int nbCarteASacrifier, int sacrificeRestant) throws Exception {
 
         Scanner sn = new Scanner(System.in);
         System.out.println("Attention, la carte " + carte.getNom() + " nécessite 1 ou plusieurs sacrifices ! Carte à sacrifier restante(s) : " + sacrificeRestant);
@@ -142,7 +142,7 @@ public class Joueur {
         return nbCarteASacrifier;
     }
 
-    private boolean poserCarteSang(Carte carte) throws Exception {
+    private boolean poserCarteSang(Animal carte) throws Exception {
         int carteSacrifiableTotal = 0;
         for (Optional<Carte> casePlateau : m_plateau) {
             if (casePlateau.isPresent()) {

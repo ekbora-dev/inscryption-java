@@ -1,0 +1,164 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam classFontStyle Bold
+skinparam style strictuml
+hide empty members
+
+class Main{
+  +{static} main(args: String[*])
+}
+
+package typeCarte{
+    abstract class Carte{
+        - m_nom : String
+        - m_pointAttaque : Integer
+        - m_pointDeVie : Integer
+        - m_gouttesDeSang : Integer
+        - m_os : Integer
+        - m_volant : Boolean
+        + <<Create>> Carte(nom : String, PV : Integer)
+        + <<Create>> Carte(nom : String, pointAttaque : Integer, PV : Integer, gouttesDeSang : Integer, os : Integer, volant : Boolean)
+        + attaquer(other : Animal)
+        + getNom() : String
+        + getPV() : Integer
+        + getAttaque() : Integer
+        + getGouttesSang() : Integer
+        + getOs() : Integer
+        + getVolant() : Boolean
+        + toString() : String
+    }
+    abstract class Animal extends Carte{
+        +<<Create>> Animal(nom : String, pointAttaque : Integer, PV : Integer, gouttesDeSang : Integer, os : Integer, volant : Boolean)
+    }
+    abstract class Obstacle extends Carte{
+        + <<Create>> Obstacle(PV : Integer, nom : String)
+    }
+}
+
+package carteAnimal{
+    class Chat extends typeCarte.Animal
+    class Corbeau extends typeCarte.Animal
+    class Coyote extends typeCarte.Animal
+    class Ecureuil extends typeCarte.Animal
+    class Grizzly extends typeCarte.Animal
+    class Hermine extends typeCarte.Animal
+    class Loup extends typeCarte.Animal
+    class Louveteau extends typeCarte.Animal
+    class Moineau extends typeCarte.Animal
+    class Punaise extends typeCarte.Animal
+}
+
+package obstacle{
+    class Rocher extends typeCarte.Obstacle
+    class Sapin extends typeCarte.Obstacle
+}
+
+package factory{
+    class CarteFactory{
+        +{static} createChat() : Animal
+        +{static} createGrizzly() : Animal
+        +{static} createCoyote() : Animal
+        +{static} createMoineau() : Animal
+        +{static} createCorbeau() : Animal
+        +{static} createEcureuil() : Animal
+        +{static} createHermine() : Animal
+        +{static} createLouveteau() : Animal
+        +{static} createLoup() : Animal
+        +{static} createPunaise() : Animal
+        +{static} createRocher() : Obstacle
+        +{static} createSapin() : Obstacle
+    }
+}
+
+package gameplay{
+    package jeu{
+        class Jeu {
+            + <<Create>> Jeu()
+            + demarrerJeu()
+        }
+
+        class Partie{
+            -m_differenceScore : Integer
+            +<<Create>> Partie()
+            + demarrerPartie() : String
+            + toString() : String
+        }
+
+        class Joueur{
+            - m_scoreJoueur : Integer
+            - m_os : Integer
+            +<<Create>> Joueur()
+            + getScoreJoueur() : Integer
+            + getPlateau()
+            + getMain()
+            + getOs() : Integer
+            + piocher()
+            + getSizePioche() : Integer
+            + poserCarte(carte : Carte, cellule : Integer)
+            + poserCarteOs(carte : Animal) : Boolean
+            + poserCarteSang(carte : Animal) : Boolean
+            + sacrificeCarte(carte : Animal, nbCarteASacrifier : Integer, sacrificeRestant : Integer) : Integer
+            + attaquer(autre : Joueur)
+            + toString() : String
+        }
+
+        class Robot extends Joueur{
+            +<<Create>> Robot()
+            + jouerTour()
+            + poserCarteRobot(carte : Animal, cellule : Integer) : Boolean
+            + osRobot : Boolean
+            + sacrificeRobot(carte : Animal) : Boolean
+            + toString() : String
+        }
+
+
+        class Pioche{
+            +<<Create>> Pioche (player : Joueur)
+            + initPioche()
+            + getTaillePioche()
+            + piocher()
+            + toString()
+        }
+
+    }
+
+    package affichage{
+        class Affichage{
+            +{static} afficherPlateau()
+            +{static} afficherMain()
+        }
+
+    }
+}
+
+Main .> gameplay.jeu.Jeu : <<use>>
+gameplay.jeu.Joueur ..> factory.CarteFactory : <<use>>
+
+CarteFactory ..> carteAnimal.Chat : <<instantiate>>
+CarteFactory ..> carteAnimal.Grizzly : <<instantiate>>
+CarteFactory ..> carteAnimal.Coyote : <<instantiate>>
+CarteFactory ..> carteAnimal.Moineau : <<instantiate>>
+CarteFactory ..> carteAnimal.Corbeau : <<instantiate>>
+CarteFactory ..> carteAnimal.Ecureuil : <<instantiate>>
+CarteFactory ..> carteAnimal.Hermine : <<instantiate>>
+CarteFactory ..> carteAnimal.Louveteau : <<instantiate>>
+CarteFactory ..> carteAnimal.Loup : <<instantiate>>
+CarteFactory ..> carteAnimal.Punaise : <<instantiate>>
+CarteFactory ..> obstacle.Rocher : <<instantiate>>
+CarteFactory ..> obstacle.Sapin : <<instantiate>>
+
+Jeu .> Partie : <<use>>
+Partie .> Joueur : <<use>>
+
+Affichage .> typeCarte.Carte : "<<use>>"
+Affichage .> typeCarte.Animal : "<<use>>"
+
+Robot o--> "1" Joueur : m_other
+
+Joueur *--> "1" typeCarte.Animal : m_pioche\nm_mainJoueur
+Joueur *--> "1" typeCarte.Carte : m_plateau
+
+Pioche *--> "0..*" Animal : m_pioche
+Pioche o--> "1" Joueur : m_joueur
+
+@enduml

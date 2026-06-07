@@ -2,7 +2,6 @@ package gameplay.jeu;
 
 import factory.CarteFactory;
 import gameplay.affichage.Affichage;
-import obstacles.Rocher;
 import typeCarte.Carte;
 
 import java.util.Optional;
@@ -10,7 +9,8 @@ import java.util.Scanner;
 
 public class Partie {
     private int m_differenceScore = 0;
-    public Partie(){
+
+    public Partie() {
 
     }
 
@@ -21,7 +21,7 @@ public class Partie {
 
         Carte[] carteAuCentre = new Carte[4];
 
-        for (int i = 0; i < 4; i++){
+        for (int i = 0; i < 4; i++) {
             robot.piocher();
             player.piocher();
         }
@@ -30,12 +30,12 @@ public class Partie {
         robot.getPlateau()[1] = Optional.of(CarteFactory.createSapin());
 
         // Ce while correspond à 1 tour complet (Robot + Joueur).
-        while (true){
+        while (true) {
             System.out.println("Différence de score (balance) : " + m_differenceScore);
 
             // On récupère la valeur absolue du score pour déterminer si la partie est terminé ou pas
-            if (Math.abs(m_differenceScore) >= 5){
-                if (player.getScoreJoueur() > robot.getScoreJoueur()){
+            if (Math.abs(m_differenceScore) >= 5) {
+                if (player.getScoreJoueur() > robot.getScoreJoueur()) {
                     System.out.println("Vous gagnez la partie");
                     return "Vous";
                 } else {
@@ -48,7 +48,7 @@ public class Partie {
 
             Affichage.afficherPlateau(robot.getPlateau());
             System.out.println("================================");
-            for (int i = 0; i < carteAuCentre.length; i++){
+            for (int i = 0; i < carteAuCentre.length; i++) {
                 System.out.println("Carte du centre");
             }
             System.out.println("================================");
@@ -64,7 +64,7 @@ public class Partie {
             boolean piocher = false;
 
             // Tour du joueur
-            while (tour){
+            while (tour) {
                 Scanner scanner = new Scanner(System.in);
                 System.out.print("vous@partie:~$ ");
                 String choix = scanner.next();
@@ -85,7 +85,7 @@ public class Partie {
                         }
                         break;
                     case "placer":
-                        try{
+                        try {
                             System.out.println("Format attendu : <cellule> <numéroCarte>");
                             Scanner sn = new Scanner(System.in);
                             System.out.print("vous@partie:~$ ");
@@ -97,8 +97,7 @@ public class Partie {
                             int carte = Integer.parseInt(parties[1]);
                             player.poserCarte(player.getMain().get(carte), cellule);
                             break;
-                        }
-                        catch (IndexOutOfBoundsException e){
+                        } catch (IndexOutOfBoundsException e) {
                             System.out.println("Vous sortez du plateau ! Annulation de l'action");
                         }
                 }

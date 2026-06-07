@@ -42,4 +42,12 @@ public class Pioche {
         }
         m_joueur.getMain().add(m_pioche.pop());
     }
+
+    @Override
+    public String toString() {
+        return "Pioche{" +
+                "m_joueur=" + m_joueur +
+                ", m_pioche=" + m_pioche +
+                '}';
+    }
 }

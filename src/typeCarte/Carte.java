@@ -51,4 +51,16 @@ public abstract class Carte {
             other.m_pointDeVie = 0;
         }
     }
+
+    @Override
+    public String toString() {
+        return "Carte{" +
+                "m_nom='" + m_nom + '\'' +
+                ", m_pointAttaque=" + m_pointAttaque +
+                ", m_pointDeVie=" + m_pointDeVie +
+                ", m_gouttesDeSang=" + m_gouttesDeSang +
+                ", m_os=" + m_os +
+                ", m_volant=" + m_volant +
+                '}';
+    }
 }
