@@ -105,6 +105,7 @@ package gameplay{
         class Robot extends Joueur{
             +<<Create>> Robot()
             + jouerTour()
+            + tourProchain()
             + poserCarteRobot(carte : Animal, cellule : Integer) : Boolean
             + osRobot : Boolean
             + sacrificeRobot(carte : Animal) : Boolean

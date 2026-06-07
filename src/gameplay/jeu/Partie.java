@@ -18,9 +18,6 @@ public class Partie {
         Joueur player = new Joueur();
         Robot robot = new Robot(player);
 
-
-        Carte[] carteAuCentre = new Carte[4];
-
         for (int i = 0; i < 4; i++) {
             robot.piocher();
             player.piocher();
@@ -47,11 +44,9 @@ public class Partie {
             robot.jouerTour();
 
             Affichage.afficherPlateau(robot.getPlateau());
-            System.out.println("================================");
-            for (int i = 0; i < carteAuCentre.length; i++) {
-                System.out.println("Carte du centre");
-            }
-            System.out.println("================================");
+            System.out.println("===Prochain Tour===");
+            Affichage.afficherPlateau(robot.tourProchain());
+            System.out.println("===Votre plateau");
             Affichage.afficherPlateau(player.getPlateau());
             Affichage.afficherMain(player.getMain());
             System.out.println("Carte dans la pioche : " + player.getSizePioche());

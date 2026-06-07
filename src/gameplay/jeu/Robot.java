@@ -1,6 +1,6 @@
 package gameplay.jeu;
 
-import typeCarte.Animal;
+import typeCarte.*;
 
 import java.util.Optional;
 
@@ -11,13 +11,59 @@ public class Robot extends Joueur{
         m_other = other;
     }
 
+    public Optional<Carte>[] tourProchain() {
+        // Copie du plateau actuel
+        Optional<Carte>[] plateauSuivant = new Optional[4];
+        for (int i = 0; i < getPlateau().length; i++) {
+            plateauSuivant[i] = getPlateau()[i];
+        }
+
+        // Même logique que jouerTour() mais sur plateauSuivant
+        int position = -1;
+        for (int i = 0; i < plateauSuivant.length; i++) {
+            if (plateauSuivant[i].isEmpty()) {
+                position = i;
+                break;
+            }
+        }
+
+        if (position == -1) return plateauSuivant;
+
+        int carteSacrifiable = 0;
+        Animal carte = null;
+
+        for (int i = 0; i < plateauSuivant.length; i++) {
+            if (plateauSuivant[i].isPresent()) carteSacrifiable++;
+        }
+
+        for (int i = 0; i < getMain().size(); i++) {
+            if (getMain().get(i).getGouttesSang() == 0) {
+                carte = getMain().get(i);
+                break;
+            }
+        }
+
+        for (int i = 0; i < getMain().size(); i++) {
+            if (getMain().get(i).getGouttesSang() <= carteSacrifiable) {
+                carte = getMain().get(i);
+                break;
+            }
+        }
+
+        // On simule le placement sur plateauSuivant (pas le vrai plateau !)
+        if (carte != null) {
+            plateauSuivant[position] = Optional.of(carte);
+        }
+
+        return plateauSuivant;
+    }
+
     public void jouerTour(){
         if (getMain().isEmpty()){
             piocher();
         }
 
         int position = -1;
-
         for (int i = 0; i < getPlateau().length; i++){
             if (getPlateau()[i].isEmpty()){
                 position = i;
@@ -25,52 +71,34 @@ public class Robot extends Joueur{
             }
         }
 
-
         int carteSacrifiable = 0;
-        Animal carte = null;
+        Optional<Animal> carte = Optional.empty();
 
         for (int i = 0; i < getPlateau().length; i++){
-            if (getPlateau()[i].isPresent()) {
-                carteSacrifiable++;
-            }
+            if (getPlateau()[i].isPresent()) carteSacrifiable++;
         }
 
         for (int i = 0; i < getMain().size(); i++){
             if (getMain().get(i).getGouttesSang() == 0){
-                carte = getMain().get(i);
+                carte = Optional.of(getMain().get(i));
                 break;
             }
         }
 
         for (int i = 0; i < getMain().size(); i++){
             if (getMain().get(i).getGouttesSang() <= carteSacrifiable){
-                carte = getMain().get(i);
+                carte = Optional.of(getMain().get(i));
                 break;
             }
         }
 
-        for (int i = 0; i < getPlateau().length; i++){
-            if (getPlateau()[i].isPresent()){
-                carteSacrifiable++;
-                if (carte != null){
-                    if (carteSacrifiable == carte.getGouttesSang()){
-                        break;
-                    }
-                }
+        if (position == -1) return;
 
-            }
-        }
-
-        if (position == -1) {
-            return;
-        }
-
-        if (carte != null){
-            poserCarteRobot(carte, position);
+        if (carte.isPresent()){
+            poserCarteRobot(carte.get(), position);
             System.out.println("Le robot joue son tour");
-        } else {
-            System.out.println("Le robot passe son tour");
         }
+
         this.attaquer(m_other);
     }
 
