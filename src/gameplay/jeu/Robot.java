@@ -14,6 +14,12 @@ public class Robot extends Joueur{
     public Optional<Carte>[] tourProchain() {
         // Copie du plateau actuel
         Optional<Carte>[] plateauSuivant = new Optional[4];
+
+        for (int i = 0; i < getPlateau().length; i++){
+            plateauSuivant[i] = Optional.empty();
+        }
+
+        // Copie du plateau
         for (int i = 0; i < getPlateau().length; i++) {
             plateauSuivant[i] = getPlateau()[i];
         }
@@ -30,29 +36,31 @@ public class Robot extends Joueur{
         if (position == -1) return plateauSuivant;
 
         int carteSacrifiable = 0;
-        Animal carte = null;
+        Optional<Animal> carte = Optional.empty();
 
-        for (int i = 0; i < plateauSuivant.length; i++) {
-            if (plateauSuivant[i].isPresent()) carteSacrifiable++;
+        // On compte le nombre de cartes sacrifiable
+        for (Optional<Carte> c : plateauSuivant) {
+            if (c.isPresent()) carteSacrifiable++;
         }
 
+        // On prend la carte le moins cher possible
         for (int i = 0; i < getMain().size(); i++) {
             if (getMain().get(i).getGouttesSang() == 0) {
-                carte = getMain().get(i);
+                carte = Optional.of(getMain().get(i));
                 break;
             }
         }
 
         for (int i = 0; i < getMain().size(); i++) {
             if (getMain().get(i).getGouttesSang() <= carteSacrifiable) {
-                carte = getMain().get(i);
+                carte = Optional.of(getMain().get(i));
                 break;
             }
         }
 
-        // On simule le placement sur plateauSuivant (pas le vrai plateau !)
-        if (carte != null) {
-            plateauSuivant[position] = Optional.of(carte);
+        // On simule le placement sur plateauSuivant
+        if (carte.isPresent()) {
+            plateauSuivant[position] = Optional.of(carte.get());
         }
 
         return plateauSuivant;
@@ -74,10 +82,12 @@ public class Robot extends Joueur{
         int carteSacrifiable = 0;
         Optional<Animal> carte = Optional.empty();
 
+        // Nombre de cartes sacrifiable
         for (int i = 0; i < getPlateau().length; i++){
             if (getPlateau()[i].isPresent()) carteSacrifiable++;
         }
 
+        // On prend la carte le moins cher possible
         for (int i = 0; i < getMain().size(); i++){
             if (getMain().get(i).getGouttesSang() == 0){
                 carte = Optional.of(getMain().get(i));
@@ -94,11 +104,13 @@ public class Robot extends Joueur{
 
         if (position == -1) return;
 
+        // Si on a une carte alors, on la place
         if (carte.isPresent()){
             poserCarteRobot(carte.get(), position);
             System.out.println("Le robot joue son tour");
         }
 
+        // On attaque le joueur adverse
         this.attaquer(m_other);
     }
 
@@ -107,9 +119,9 @@ public class Robot extends Joueur{
             return;
         }
 
+        // Si la carte qu'on pose est gratuite alors, on la pose
         if (carte.getGouttesSang() == 0 && carte.getOs() == 0) {
-            getPlateau()[cellule] = Optional.of(carte);
-            getMain().remove(carte);
+            placerCarte(carte, cellule);
         }
 
 
@@ -118,20 +130,17 @@ public class Robot extends Joueur{
 
             // Si la fonction renvoie true (sacrifice possible et fait), alors on pose la carte
             if (sacrifice) {
-                getPlateau()[cellule] = Optional.of(carte);
-                getMain().remove(carte);
+                placerCarte(carte, cellule);
 
             }
         } else if (getOsJoueur() >= carte.getOs()) {
-            getPlateau()[cellule] = Optional.of(carte);
-            getMain().remove(carte);
+            placerCarte(carte, cellule);
         } else {
             boolean os = osRobot(carte);
 
             // Si la fonction renvoie true (nombre d'os suffisant pour poser la carte), alors on pose la carte
             if (os) {
-                getPlateau()[cellule] = Optional.of(carte);
-                getMain().remove(carte);
+                placerCarte(carte, cellule);
             }
         }
     }
