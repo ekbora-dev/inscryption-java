@@ -9,7 +9,7 @@ public class Jeu {
         for (int i = 0; i < 3; i++){
             int numPartie = i+1;
             System.out.println("=====DEBUT DE LA PARTIE n°" + numPartie + "=====");
-            Partie partie = new Partie();
+            Partie partie = new Partie(numPartie);
             vainqueur = partie.demarrerPartie();
 
             if (vainqueur.equals("Robot")){

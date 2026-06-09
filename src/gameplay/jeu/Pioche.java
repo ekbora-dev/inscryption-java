@@ -1,6 +1,5 @@
 package gameplay.jeu;
 
-import carteAnimal.*;
 import factory.CarteFactory;
 import typeCarte.Animal;
 
@@ -14,25 +13,25 @@ public class Pioche {
     }
 
     public void initPioche(){
-        m_pioche.push(CarteFactory.createEcureuil());
-        m_pioche.push(CarteFactory.createEcureuil());
-        m_pioche.push(CarteFactory.createPunaise());
         m_pioche.push(CarteFactory.createChat());
-        m_pioche.push(CarteFactory.createGrizzly());
-        m_pioche.push(CarteFactory.createMoineau());
-        m_pioche.push(CarteFactory.createCoyote());
-        m_pioche.push(CarteFactory.createLouveteau());
+        m_pioche.push(CarteFactory.createEcureuil());
         m_pioche.push(CarteFactory.createLoup());
-        m_pioche.push(CarteFactory.createHermine());
         m_pioche.push(CarteFactory.createEcureuil());
         m_pioche.push(CarteFactory.createCorbeau());
+        m_pioche.push(CarteFactory.createGrizzly());
         m_pioche.push(CarteFactory.createEcureuil());
+        m_pioche.push(CarteFactory.createPunaise());
+        m_pioche.push(CarteFactory.createHermine());
         m_pioche.push(CarteFactory.createEcureuil());
+        m_pioche.push(CarteFactory.createMoineau());
+        m_pioche.push(CarteFactory.createLouveteau());
+        m_pioche.push(CarteFactory.createEcureuil());
+        m_pioche.push(CarteFactory.createCoyote());
         m_pioche.push(CarteFactory.createEcureuil());
     }
 
-    public int getTaillePioche(){
-        return m_pioche.size();
+    public Stack<Animal> getPioche(){
+        return m_pioche;
     }
 
     public void piocher(){

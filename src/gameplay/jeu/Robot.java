@@ -12,19 +12,16 @@ public class Robot extends Joueur{
     }
 
     public Optional<Carte>[] tourProchain() {
-        // Copie du plateau actuel
         Optional<Carte>[] plateauSuivant = new Optional[4];
 
         for (int i = 0; i < getPlateau().length; i++){
             plateauSuivant[i] = Optional.empty();
         }
 
-        // Copie du plateau
         for (int i = 0; i < getPlateau().length; i++) {
             plateauSuivant[i] = getPlateau()[i];
         }
 
-        // Même logique que jouerTour() mais sur plateauSuivant
         int position = -1;
         for (int i = 0; i < plateauSuivant.length; i++) {
             if (plateauSuivant[i].isEmpty()) {
@@ -38,27 +35,38 @@ public class Robot extends Joueur{
         int carteSacrifiable = 0;
         Optional<Animal> carte = Optional.empty();
 
-        // On compte le nombre de cartes sacrifiable
         for (Optional<Carte> c : plateauSuivant) {
             if (c.isPresent()) carteSacrifiable++;
         }
 
-        // On prend la carte le moins cher possible
         for (int i = 0; i < getMain().size(); i++) {
-            if (getMain().get(i).getGouttesSang() == 0) {
-                carte = Optional.of(getMain().get(i));
+            Animal c = getMain().get(i);
+            if (c.getGouttesSang() == 0 && c.getOs() == 0) {
+                carte = Optional.of(c);
                 break;
             }
         }
 
-        for (int i = 0; i < getMain().size(); i++) {
-            if (getMain().get(i).getGouttesSang() <= carteSacrifiable) {
-                carte = Optional.of(getMain().get(i));
-                break;
+        if (carte.isEmpty()) {
+            for (int i = 0; i < getMain().size(); i++) {
+                Animal c = getMain().get(i);
+                if (c.getGouttesSang() > 0 && c.getGouttesSang() <= carteSacrifiable) {
+                    carte = Optional.of(c);
+                    break;
+                }
             }
         }
 
-        // On simule le placement sur plateauSuivant
+        if (carte.isEmpty()) {
+            for (int i = 0; i < getMain().size(); i++) {
+                Animal c = getMain().get(i);
+                if (c.getOs() > 0 && c.getOs() <= getOsJoueur()) {
+                    carte = Optional.of(c);
+                    break;
+                }
+            }
+        }
+
         if (carte.isPresent()) {
             plateauSuivant[position] = Optional.of(carte.get());
         }
@@ -82,64 +90,73 @@ public class Robot extends Joueur{
         int carteSacrifiable = 0;
         Optional<Animal> carte = Optional.empty();
 
-        // Nombre de cartes sacrifiable
         for (int i = 0; i < getPlateau().length; i++){
             if (getPlateau()[i].isPresent()) carteSacrifiable++;
         }
 
-        // On prend la carte le moins cher possible
+        // Carte totalement gratuite
         for (int i = 0; i < getMain().size(); i++){
-            if (getMain().get(i).getGouttesSang() == 0){
-                carte = Optional.of(getMain().get(i));
+            Animal c = getMain().get(i);
+            if (c.getGouttesSang() == 0 && c.getOs() == 0){
+                carte = Optional.of(c);
                 break;
             }
         }
 
-        for (int i = 0; i < getMain().size(); i++){
-            if (getMain().get(i).getGouttesSang() <= carteSacrifiable){
-                carte = Optional.of(getMain().get(i));
-                break;
+        if (carte.isEmpty()){
+            for (int i = 0; i < getMain().size(); i++){
+                Animal c = getMain().get(i);
+                if (c.getGouttesSang() > 0 && c.getGouttesSang() <= carteSacrifiable){
+                    carte = Optional.of(c);
+                    break;
+                }
             }
         }
 
-        if (position == -1) return;
-
-        // Si on a une carte alors, on la place
-        if (carte.isPresent()){
-            poserCarteRobot(carte.get(), position);
-            System.out.println("Le robot joue son tour");
+        if (carte.isEmpty()){
+            for (int i = 0; i < getMain().size(); i++){
+                Animal c = getMain().get(i);
+                if (c.getOs() > 0 && c.getOs() <= getOsJoueur()){
+                    carte = Optional.of(c);
+                    break;
+                }
+            }
         }
 
-        // On attaque le joueur adverse
+        if (position != -1) {
+            if (carte.isPresent()){
+                poserCarteRobot(carte.get(), position);
+                System.out.println("Le robot joue son tour");
+            } else {
+                System.out.println("Le robot passe son tour");
+            }
+        }
+
         this.attaquer(m_other);
     }
 
     public void poserCarteRobot(Animal carte, int cellule) {
-        if (getPlateau()[cellule].isPresent()) {
+        if (getPlateau()[cellule].isPresent()) return;
+
+        // Carte gratuite (pas de sang, pas d'os)
+        if (carte.getGouttesSang() == 0 && carte.getOs() == 0) {
+            placerCarte(carte, cellule);
             return;
         }
 
-        // Si la carte qu'on pose est gratuite alors, on la pose
-        if (carte.getGouttesSang() == 0 && carte.getOs() == 0) {
-            placerCarte(carte, cellule);
+        // Carte payée en sang
+        if (carte.getGouttesSang() > 0) {
+            if (sacrificeRobot(carte)) {
+                placerCarte(carte, cellule);
+            }
+            return;
         }
 
-
-        if (carte.getGouttesSang() > 0) {
-            boolean sacrifice = sacrificeRobot(carte);
-
-            // Si la fonction renvoie true (sacrifice possible et fait), alors on pose la carte
-            if (sacrifice) {
+        // Carte payée en os
+        if (carte.getOs() > 0) {
+            if (getOsJoueur() >= carte.getOs()) {
                 placerCarte(carte, cellule);
-
-            }
-        } else if (getOsJoueur() >= carte.getOs()) {
-            placerCarte(carte, cellule);
-        } else {
-            boolean os = osRobot(carte);
-
-            // Si la fonction renvoie true (nombre d'os suffisant pour poser la carte), alors on pose la carte
-            if (os) {
+            } else if (osRobot(carte)) {
                 placerCarte(carte, cellule);
             }
         }

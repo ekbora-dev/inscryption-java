@@ -1,6 +1,7 @@
 package gameplay.jeu;
 
 import carteAnimal.Chat;
+import factory.CarteFactory;
 import org.junit.Test;
 import typeCarte.*;
 import carteAnimal.*;
@@ -17,9 +18,8 @@ public class TestCarte {
 
     @Test
     public void attaqueCarte(){
-        Animal her = new Hermine();
-        Animal ecu = new Ecureuil();
-
+        Animal her = CarteFactory.createHermine();
+        Animal ecu = CarteFactory.createEcureuil();
 
         her.attaquer(ecu);
         assertSame(0, ecu.getPV());

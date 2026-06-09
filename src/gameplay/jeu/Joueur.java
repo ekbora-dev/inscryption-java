@@ -39,10 +39,14 @@ public class Joueur {
     }
 
     public int getSizePioche(){
-        return m_pioche.getTaillePioche();
+        return m_pioche.getPioche().size();
     }
 
-    public void poserCarte(Animal carte, int cellule) throws Exception {
+    public Stack<Animal> getPioche(){
+        return m_pioche.getPioche();
+    }
+
+    public void poserCarte(Animal carte, int cellule) throws IndexOutOfBoundsException {
         if (carte.getOs() > 0){
             boolean cartePosable = poserCarteOs(carte);
 
@@ -91,16 +95,21 @@ public class Joueur {
         }
     }
 
-    public void placerCarte(Animal carte, int cellule) {
-        if (m_plateau[cellule].isPresent()) {
-            System.out.println("Case occupé !");
-            return;
+    public void placerCarte(Animal carte, int cellule) throws IndexOutOfBoundsException{
+        try {
+            if (m_plateau[cellule].isPresent()) {
+                System.out.println("Case occupé !");
+                return;
+            }
+            m_plateau[cellule] = Optional.of(carte);
+            m_mainJoueur.remove(carte);
         }
-        m_plateau[cellule] = Optional.of(carte);
-        m_mainJoueur.remove(carte);
+        catch (IndexOutOfBoundsException err){
+            throw new IndexOutOfBoundsException("Vous sortez du plateau, le plateau va de 0 à 3");
+        }
     }
 
-    private boolean poserCarteOs(Animal carte) throws Exception {
+    private boolean poserCarteOs(Animal carte) throws IndexOutOfBoundsException {
         if (m_os >= carte.getOs()){
             return true;
         } else {
@@ -120,8 +129,7 @@ public class Joueur {
         }
     }
 
-    private int sacrificeCarte(Animal carte, int nbCarteASacrifier, int sacrificeRestant) throws Exception {
-
+    private int sacrificeCarte(Animal carte, int nbCarteASacrifier, int sacrificeRestant) throws IndexOutOfBoundsException {
         Scanner sn = new Scanner(System.in);
         System.out.println("Attention, la carte " + carte.getNom() + " nécessite 1 ou plusieurs sacrifices ! Carte à sacrifier restante(s) : " + sacrificeRestant);
         System.out.print("Saisir l'indice de la carte à sacrifier : ");
@@ -135,14 +143,14 @@ public class Joueur {
                 nbCarteASacrifier++;
             }
         }
-        catch (Exception e){
-            throw new Exception("Erreur : Vous sortez du plateau !");
+        catch (IndexOutOfBoundsException e){
+            throw new IndexOutOfBoundsException("Vous sortez du plateau ! Le plateau va de 0 à 3 !");
         }
 
         return nbCarteASacrifier;
     }
 
-    private boolean poserCarteSang(Animal carte) throws Exception {
+    private boolean poserCarteSang(Animal carte) throws IndexOutOfBoundsException {
         int carteSacrifiableTotal = 0;
         for (Optional<Carte> casePlateau : m_plateau) {
             if (casePlateau.isPresent()) {

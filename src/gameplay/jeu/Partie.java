@@ -2,21 +2,28 @@ package gameplay.jeu;
 
 import factory.CarteFactory;
 import gameplay.affichage.Affichage;
-import typeCarte.Carte;
+import typeCarte.Animal;
 
 import java.util.Optional;
 import java.util.Scanner;
 
 public class Partie {
     private int m_differenceScore = 0;
+    private final int numeroPartie;
 
-    public Partie() {
-
+    public Partie(int numPartie) {
+        numeroPartie = numPartie;
     }
 
-    public String demarrerPartie() throws Exception {
+    public String demarrerPartie() {
         Joueur player = new Joueur();
         Robot robot = new Robot(player);
+
+        if (numeroPartie == 3){
+            Animal carte = choixCartePioche();
+
+            player.getPioche().push(carte);
+        }
 
         for (int i = 0; i < 4; i++) {
             robot.piocher();
@@ -93,13 +100,31 @@ public class Partie {
                             player.poserCarte(player.getMain().get(carte), cellule);
                             break;
                         } catch (IndexOutOfBoundsException e) {
-                            System.out.println("Vous sortez du plateau ! Annulation de l'action");
+                            System.out.println(e.getMessage());
                         }
                 }
             }
             player.attaquer(robot);
             m_differenceScore = player.getScoreJoueur() - robot.getScoreJoueur();
         }
+    }
+
+    public Animal choixCartePioche(){
+        System.out.println("Choisissez une carte parmi les 2 cartes proposés à ajouter à la pioche");
+
+        Animal loup = CarteFactory.createLoup();
+        Animal hermine = CarteFactory.createHermine();
+        System.out.println("1. " + loup.getNom() +" PV : "+ loup.getPV() +" Att : "+ loup.getAttaque());
+        System.out.println("2. " + hermine.getNom() +" PV : "+ hermine.getPV() +" Att :"+ hermine.getAttaque());
+
+        Scanner sn = new Scanner(System.in);
+        System.out.print("Votre choix");
+        int choix = Integer.parseInt(sn.next());
+        if (choix == 1) {
+            return loup;
+        }
+
+        return hermine;
     }
 
     @Override
