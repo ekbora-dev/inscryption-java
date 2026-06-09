@@ -9,7 +9,8 @@ class Main{
 }
 
 package typeCarte{
-    abstract class Carte{
+    abstract class Carte <<abstract>>
+    {
         - m_nom : String
         - m_pointAttaque : Integer
         - m_pointDeVie : Integer
@@ -37,24 +38,16 @@ package typeCarte{
     }
 }
 
-package carteAnimal{
-    class Chat extends typeCarte.Animal
-    class Corbeau extends typeCarte.Animal
-    class Coyote extends typeCarte.Animal
-    class Ecureuil extends typeCarte.Animal
-    class Grizzly extends typeCarte.Animal
-    class Hermine extends typeCarte.Animal
-    class Loup extends typeCarte.Animal
-    class Louveteau extends typeCarte.Animal
-    class Moineau extends typeCarte.Animal
-    class Punaise extends typeCarte.Animal
+package pouvoirs{
+    enum Pouvoir <<enumerate>>{
+        NOMBREUSES_VIES
+        CROISSANCE
+        PUANT
+        COUREUR
+        CONTACT_MORTEL
+        PIQUES_POINTUES
+    }
 }
-
-package obstacle{
-    class Rocher extends typeCarte.Obstacle
-    class Sapin extends typeCarte.Obstacle
-}
-
 package factory{
     class CarteFactory{
         +{static} createChat() : Animal
@@ -140,19 +133,6 @@ package gameplay{
 Main .> gameplay.jeu.Jeu : <<use>>
 gameplay.jeu.Joueur ..> factory.CarteFactory : <<use>>
 
-CarteFactory ..> carteAnimal.Chat : <<instantiate>>
-CarteFactory ..> carteAnimal.Grizzly : <<instantiate>>
-CarteFactory ..> carteAnimal.Coyote : <<instantiate>>
-CarteFactory ..> carteAnimal.Moineau : <<instantiate>>
-CarteFactory ..> carteAnimal.Corbeau : <<instantiate>>
-CarteFactory ..> carteAnimal.Ecureuil : <<instantiate>>
-CarteFactory ..> carteAnimal.Hermine : <<instantiate>>
-CarteFactory ..> carteAnimal.Louveteau : <<instantiate>>
-CarteFactory ..> carteAnimal.Loup : <<instantiate>>
-CarteFactory ..> carteAnimal.Punaise : <<instantiate>>
-CarteFactory ..> obstacle.Rocher : <<instantiate>>
-CarteFactory ..> obstacle.Sapin : <<instantiate>>
-
 Jeu .> Partie : <<use>>
 
 Partie .> Joueur : <<use>>
@@ -161,6 +141,10 @@ Partie .> CarteFactory : <<use>>
 
 Affichage .> typeCarte.Carte : "<<use>>"
 Affichage .> typeCarte.Animal : "<<use>>"
+
+Animal .> Pouvoir : <<use>>
+
+Carte *--> "1,2" Pouvoir : m_pouvoir
 
 Robot o--> "1" Joueur : m_other
 

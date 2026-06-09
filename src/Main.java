@@ -1,4 +1,3 @@
-import carteAnimal.*;
 import gameplay.jeu.*;
 import typeCarte.*;
 

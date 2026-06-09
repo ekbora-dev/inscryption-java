@@ -19,6 +19,8 @@ public class Partie {
         Joueur player = new Joueur();
         Robot robot = new Robot(player);
 
+        int numTour = 1;
+
         if (numeroPartie == 3){
             Animal carte = choixCartePioche();
 
@@ -35,6 +37,7 @@ public class Partie {
 
         // Ce while correspond à 1 tour complet (Robot + Joueur).
         while (true) {
+            System.out.println("Tour n° " + numTour);
             System.out.println("Différence de score (balance) : " + m_differenceScore);
 
             if (player.getSizePioche() == 0 && m_differenceScore != 5 && robot.getSizePioche() == 0){
@@ -60,7 +63,7 @@ public class Partie {
             System.out.println("===Votre plateau===");
             Affichage.afficherPlateau(player.getPlateau());
             Affichage.afficherMain(player.getMain());
-            System.out.println("Carte dans la pioche : " + player.getSizePioche());
+            System.out.println("Carte dans la pioche : " + player.getSizePioche() + " | Nombre d'os : " + player.getOsJoueur());
 
             System.out.println("Actions possible");
             System.out.println("[fin] Fin de votre tour");
@@ -105,10 +108,18 @@ public class Partie {
                         } catch (IndexOutOfBoundsException e) {
                             System.out.println(e.getMessage());
                         }
+                        catch (NumberFormatException e){
+                            System.out.println("Veuillez saisir en respectant le format de saisie indiqué !");
+                        }
+                        finally {
+                            Affichage.afficherMain(player.getMain());
+                            Affichage.afficherPlateau(player.getPlateau());
+                        }
                 }
             }
             player.attaquer(robot);
             m_differenceScore = player.getScoreJoueur() - robot.getScoreJoueur();
+            numTour++;
         }
     }
 

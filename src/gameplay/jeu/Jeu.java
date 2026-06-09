@@ -22,9 +22,9 @@ public class Jeu {
         }
 
         if (compteurJoueur > compteurRobot){
-            System.out.println("Vous avez gagnez !");
+            System.out.println("Vous avez gagnez le jeu !");
         } else if (compteurRobot > compteurJoueur) {
-            System.out.println("Vous avez perdu ! Le robot s'en est bien sorti");
+            System.out.println("Vous avez perdu le jeu ! Le robot s'en est bien sorti");
         } else {
             System.out.println("Egalité !");
         }

@@ -1,17 +1,15 @@
 package gameplay.jeu;
 
-import carteAnimal.Chat;
 import factory.CarteFactory;
 import org.junit.Test;
 import typeCarte.*;
-import carteAnimal.*;
 
 import static org.junit.Assert.*;
 
 public class TestCarte {
     @Test
     public void initialisationCarte(){
-        Animal carte = new Chat();
+        Animal carte = CarteFactory.createChat();
 
         assertSame("Chat", carte.getNom());
     }

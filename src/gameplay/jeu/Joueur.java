@@ -143,6 +143,7 @@ public class Joueur {
         }
     }
 
+    // Fonction qui permet de demander à l'utilisateur la carte à sacrifier (retourne le nombre de carte(s) à sacrifier restante(s))
     private int sacrificeCarte(Animal carte, int nbCarteASacrifier, int sacrificeRestant) throws IndexOutOfBoundsException {
         Scanner sn = new Scanner(System.in);
         System.out.println("Attention, la carte " + carte.getNom() + " nécessite 1 ou plusieurs sacrifices ! Carte à sacrifier restante(s) : " + sacrificeRestant);
@@ -161,6 +162,9 @@ public class Joueur {
         }
         catch (IndexOutOfBoundsException e){
             throw new IndexOutOfBoundsException("Vous sortez du plateau ! Le plateau va de 0 à 3 !");
+        }
+        catch (NumberFormatException e){
+            throw new NumberFormatException("Veuillez saisir en respectant le format de saisie indiqué !");
         }
 
         return nbCarteASacrifier;

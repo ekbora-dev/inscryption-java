@@ -1,8 +1,10 @@
 package typeCarte;
 
-public abstract class Animal extends Carte{
-    public Animal(String nom, int pointAttaque, int pointDeVie, int gouttesDeSang, int os, boolean volant){
-        super(nom, pointDeVie, pointAttaque, gouttesDeSang, os, volant);
+import pouvoirs.Pouvoir;
+
+public class Animal extends Carte{
+    public Animal(String nom, int pointAttaque, int pointDeVie, int gouttesDeSang, int os, boolean volant, Pouvoir pvr){
+        super(nom, pointDeVie, pointAttaque, gouttesDeSang, os, volant, pvr);
     }
 
     @Override
