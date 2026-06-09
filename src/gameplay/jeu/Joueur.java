@@ -115,7 +115,21 @@ public class Joueur {
         } else {
             int nbCarteASacrifier = 0;
             int sacrificeRestant;
+
+            int carteSacrifiableTotal = 0;
+
+            for (Optional<Carte> casePlateau : m_plateau) {
+                if (casePlateau.isPresent() && casePlateau.get().isSacrifiable()) {
+                    carteSacrifiableTotal++;
+                }
+            }
+
+            if (carteSacrifiableTotal < carte.getOs() - m_os){
+                System.out.println("Impossible de poser cette carte, vous n'avez pas assez de carte à sacrifier");
+                return false;
+            }
             while (nbCarteASacrifier < carte.getOs()) {
+
                 sacrificeRestant = carte.getOs() - m_os - nbCarteASacrifier; // On soustrait les os du joueur pour compléter les os manquants
                 nbCarteASacrifier = sacrificeCarte(carte, nbCarteASacrifier, sacrificeRestant);
             }
@@ -137,6 +151,8 @@ public class Joueur {
         try {
             if (m_plateau[index].isEmpty()) {
                 System.out.println("Cette case est vide !");
+            } else if (!m_plateau[index].get().isSacrifiable()) {
+                System.out.println("Vous ne pouvez pas sacrifier un obstacle !");
             } else {
                 m_plateau[index] = Optional.empty();
                 m_os++;
@@ -153,8 +169,8 @@ public class Joueur {
     private boolean poserCarteSang(Animal carte) throws IndexOutOfBoundsException {
         int carteSacrifiableTotal = 0;
         for (Optional<Carte> casePlateau : m_plateau) {
-            if (casePlateau.isPresent()) {
-                carteSacrifiableTotal += casePlateau.get().getGouttesSang();
+            if (casePlateau.isPresent() && casePlateau.get().isSacrifiable()) {
+                carteSacrifiableTotal++;
             }
         }
 
@@ -165,7 +181,7 @@ public class Joueur {
 
         int nbCarteASacrifier = 0;
         int sacrificeRestant;
-        while (nbCarteASacrifier < m_plateau.length) {
+        while (nbCarteASacrifier < carte.getGouttesSang()) {
             sacrificeRestant = carte.getGouttesSang() - nbCarteASacrifier;
             nbCarteASacrifier = sacrificeCarte(carte, nbCarteASacrifier, sacrificeRestant);
         }

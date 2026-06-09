@@ -25,10 +25,12 @@ package typeCarte{
         + getGouttesSang() : Integer
         + getOs() : Integer
         + getVolant() : Boolean
+        + isSacrifiable() : Boolean
         + toString() : String
     }
     abstract class Animal extends Carte{
         +<<Create>> Animal(nom : String, pointAttaque : Integer, PV : Integer, gouttesDeSang : Integer, os : Integer, volant : Boolean)
+        + isSacrifiable() : Boolean
     }
     abstract class Obstacle extends Carte{
         + <<Create>> Obstacle(PV : Integer, nom : String)
@@ -79,8 +81,10 @@ package gameplay{
 
         class Partie{
             -m_differenceScore : Integer
-            +<<Create>> Partie()
+            -numeroPartie : Integer
+            +<<Create>> Partie(numPartie : Integer)
             + demarrerPartie() : String
+            + choixCartePioche()
             + toString() : String
         }
 
@@ -116,7 +120,8 @@ package gameplay{
         class Pioche{
             +<<Create>> Pioche (player : Joueur)
             + initPioche()
-            + getTaillePioche()
+            + getTaillePioche() : Integer
+            + getPioche()
             + piocher()
             + toString()
         }
@@ -149,7 +154,10 @@ CarteFactory ..> obstacle.Rocher : <<instantiate>>
 CarteFactory ..> obstacle.Sapin : <<instantiate>>
 
 Jeu .> Partie : <<use>>
+
 Partie .> Joueur : <<use>>
+Partie .> Animal : <<use>>
+Partie .> CarteFactory : <<use>>
 
 Affichage .> typeCarte.Carte : "<<use>>"
 Affichage .> typeCarte.Animal : "<<use>>"

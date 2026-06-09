@@ -9,13 +9,33 @@ import static org.junit.Assert.*;
 
 public class TestJoueur {
     @Test
-    public void piocher(){
-        Joueur player = new Joueur();
-
-        player.piocher();
-
-        assertSame(14, player.getSizePioche());
+    public void piocher() {
+        Joueur joueur = new Joueur();
+        int taillePioche = joueur.getSizePioche();
+        joueur.piocher();
+        assertEquals(taillePioche - 1, joueur.getSizePioche());
+        assertEquals(1, joueur.getMain().size());
     }
+
+    @Test
+    public void miseEnPlacePartie() {
+        Joueur joueur = new Joueur();
+
+        for (int i = 0; i < joueur.getPlateau().length; i++){
+            assertTrue(joueur.getPlateau()[i].isEmpty());
+        }
+
+        assertTrue(joueur.getSizePioche() > 0);
+    }
+
+    @Test
+    public void testAjoutCartePioche() {
+        Joueur joueur = new Joueur();
+        int tailleAvant = joueur.getSizePioche();
+        joueur.getPioche().push(CarteFactory.createLoup());
+        assertEquals(tailleAvant + 1, joueur.getSizePioche());
+    }
+
 
     @Test
     public void miseAJourScore(){

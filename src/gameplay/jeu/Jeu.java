@@ -14,15 +14,19 @@ public class Jeu {
 
             if (vainqueur.equals("Robot")){
                 compteurRobot++;
-            } else {
+            } else if (vainqueur.equals("Vous")) {
                 compteurJoueur++;
+            } else {
+                System.out.println("Égalité !");
             }
         }
 
         if (compteurJoueur > compteurRobot){
             System.out.println("Vous avez gagnez !");
-        } else {
+        } else if (compteurRobot > compteurJoueur) {
             System.out.println("Vous avez perdu ! Le robot s'en est bien sorti");
+        } else {
+            System.out.println("Egalité !");
         }
     }
 }

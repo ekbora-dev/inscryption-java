@@ -52,6 +52,10 @@ public abstract class Carte {
         }
     }
 
+    public boolean isSacrifiable(){
+        return false;
+    }
+
     @Override
     public String toString() {
         return "Carte{" +

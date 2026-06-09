@@ -37,6 +37,10 @@ public class Partie {
         while (true) {
             System.out.println("Différence de score (balance) : " + m_differenceScore);
 
+            if (player.getSizePioche() == 0 && m_differenceScore != 5 && robot.getSizePioche() == 0){
+                return "Egalité";
+            }
+
             // On récupère la valeur absolue du score pour déterminer si la partie est terminé ou pas
             if (Math.abs(m_differenceScore) >= 5) {
                 if (player.getScoreJoueur() > robot.getScoreJoueur()) {
@@ -49,11 +53,11 @@ public class Partie {
             }
 
             robot.jouerTour();
-
-            Affichage.afficherPlateau(robot.getPlateau());
-            System.out.println("===Prochain Tour===");
+            System.out.println("===Prochain plateau du robot===");
             Affichage.afficherPlateau(robot.tourProchain());
-            System.out.println("===Votre plateau");
+            System.out.println("===Plateau actuel du robot===");
+            Affichage.afficherPlateau(robot.getPlateau());
+            System.out.println("===Votre plateau===");
             Affichage.afficherPlateau(player.getPlateau());
             Affichage.afficherMain(player.getMain());
             System.out.println("Carte dans la pioche : " + player.getSizePioche());
@@ -70,7 +74,6 @@ public class Partie {
                 Scanner scanner = new Scanner(System.in);
                 System.out.print("vous@partie:~$ ");
                 String choix = scanner.next();
-
 
                 switch (choix) {
                     case "fin":
