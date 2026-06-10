@@ -29,10 +29,7 @@ public class Affichage {
         System.out.println("Votre main");
         for (int i = 0; i < cartes.size(); i++){
             Animal carteActuelle = cartes.get(i);
-            System.out.println("\t" + i + ". " + carteActuelle.getNom() +" PV: " + carteActuelle.getPV() + " Att: " + carteActuelle.getAttaque() + " Gouttes de sang: " + carteActuelle.getGouttesSang() + " Os : " + carteActuelle.getOs() + " Volante : " + (carteActuelle.getVolant() ? "Oui" : "Non"));
+            System.out.println("\t" + i + ". " + carteActuelle.getNom() +" PV: " + carteActuelle.getPV() + " Att: " + carteActuelle.getAttaque() + " Gouttes de sang: " + carteActuelle.getGouttesSang() + " Os : " + carteActuelle.getOs() + " Volante : " + (carteActuelle.getVolant() ? "Oui" : "Non") + (carteActuelle.getPouvoir().isPresent() ? " - Pouvoir : " + carteActuelle.getPouvoir().get().getNom() : ""));
         }
     }
 }
-
-
-

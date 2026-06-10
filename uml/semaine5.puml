@@ -19,10 +19,12 @@ package typeCarte{
         - m_volant : Boolean
         + <<Create>> Carte(nom : String, PV : Integer)
         + <<Create>> Carte(nom : String, pointAttaque : Integer, PV : Integer, gouttesDeSang : Integer, os : Integer, volant : Boolean)
-        + attaquer(other : Animal)
+        + attaquer(other : Carte)
+        + infligerDegats(degats : Integer)
         + getNom() : String
         + getPV() : Integer
         + getAttaque() : Integer
+        + reduireAttaque(valeur : Integer)
         + getGouttesSang() : Integer
         + getOs() : Integer
         + getVolant() : Boolean
@@ -30,8 +32,10 @@ package typeCarte{
         + toString() : String
     }
     abstract class Animal extends Carte{
-        +<<Create>> Animal(nom : String, pointAttaque : Integer, PV : Integer, gouttesDeSang : Integer, os : Integer, volant : Boolean)
+        - m_pouvoir : Optional
+        +<<Create>> Animal(nom : String, pointAttaque : Integer, PV : Integer, gouttesDeSang : Integer, os : Integer, volant : Boolean, pouvoir : FonctionPouvoir)
         + isSacrifiable() : Boolean
+        + getPouvoir() : Optional
     }
     abstract class Obstacle extends Carte{
         + <<Create>> Obstacle(PV : Integer, nom : String)
@@ -39,15 +43,44 @@ package typeCarte{
 }
 
 package pouvoirs{
-    enum Pouvoir <<enumerate>>{
-        NOMBREUSES_VIES
-        CROISSANCE
-        PUANT
-        COUREUR
-        CONTACT_MORTEL
-        PIQUES_POINTUES
+    interface FonctionPouvoir <<interface>>{
+        + getNom() : String
+        + onAttaque(carte : Animal, joueur : Joueur, adversaire : Joueur)
+        + onDefense(carte : Animal, joueur : Joueur, adversaire : Joueur)
+    }
+
+    abstract class PouvoirAbstrait <<abstract>> implements FonctionPouvoir{
+        + onAttaque(carte : Animal, joueur : Joueur, adversaire : Joueur)
+        + onDefense(carte : Animal, joueur : Joueur, adversaire : Joueur)
+    }
+
+    class Puant extends PouvoirAbstrait{
+        + getNom() : String
+        + onAttaque(carte : Animal, joueur : Joueur, adversaire : Joueur)
+    }
+    class NombreusesVies extends PouvoirAbstrait{
+        + getNom() : String
+        + onSacrifice(carte : Animal, joueur : Joueur)
+    }
+    class Croissance extends PouvoirAbstrait{
+        - m_nbTours : Integer
+        + getNom() : String
+        + onDebutTour(carte : Animal, joueur : Joueur, adversaire : Joueur)
+    }
+    class Coureur extends PouvoirAbstrait{
+        + getNom() : String
+        + onAttaque(carte : Animal, joueur : Joueur, adversaire : Joueur)
+    }
+    class ContactMortel extends PouvoirAbstrait{
+        + getNom() : String
+        + onAttaque(carte : Animal, joueur : Joueur, adversaire : Joueur)
+    }
+    class PiquesPointues extends PouvoirAbstrait{
+        + getNom() : String
+        + onDefense(carte : Animal, joueur : Joueur, adversaire : Joueur)
     }
 }
+
 package factory{
     class CarteFactory{
         +{static} createChat() : Animal
@@ -60,6 +93,9 @@ package factory{
         +{static} createLouveteau() : Animal
         +{static} createLoup() : Animal
         +{static} createPunaise() : Animal
+        +{static} createElan() : Animal
+        +{static} createVipere() : Animal
+        +{static} createPorcEpic() : Animal
         +{static} createRocher() : Obstacle
         +{static} createSapin() : Obstacle
     }
@@ -73,8 +109,8 @@ package gameplay{
         }
 
         class Partie{
-            -m_differenceScore : Integer
-            -numeroPartie : Integer
+            - m_differenceScore : Integer
+            - m_numeroPartie : Integer
             +<<Create>> Partie(numPartie : Integer)
             + demarrerPartie() : String
             + choixCartePioche()
@@ -88,45 +124,46 @@ package gameplay{
             + getScoreJoueur() : Integer
             + getPlateau()
             + getMain()
-            + getOs() : Integer
+            + getOsJoueur() : Integer
+            + ajouterOs(montant : Integer)
+            + retirerOs(montant : Integer)
             + piocher()
             + getSizePioche() : Integer
-            + poserCarte(carte : Carte, cellule : Integer)
+            + poserCarte(carte : Animal, cellule : Integer)
             + poserCarteOs(carte : Animal) : Boolean
             + poserCarteSang(carte : Animal) : Boolean
             + sacrificeCarte(carte : Animal, nbCarteASacrifier : Integer, sacrificeRestant : Integer) : Integer
+            + placerCarte(carte : Animal, cellule : Integer)
             + attaquer(autre : Joueur)
+            + debutTour(adversaire : Joueur)
             + toString() : String
         }
 
         class Robot extends Joueur{
-            +<<Create>> Robot()
+            +<<Create>> Robot(joueur : Joueur)
             + jouerTour()
-            + tourProchain()
-            + poserCarteRobot(carte : Animal, cellule : Integer) : Boolean
-            + osRobot : Boolean
+            + tourProchain() : Optional
+            + poserCarteRobot(carte : Animal, cellule : Integer)
+            + osRobot(carte : Animal) : Boolean
             + sacrificeRobot(carte : Animal) : Boolean
             + toString() : String
         }
 
-
         class Pioche{
-            +<<Create>> Pioche (player : Joueur)
+            +<<Create>> Pioche(player : Joueur)
             + initPioche()
             + getTaillePioche() : Integer
             + getPioche()
             + piocher()
             + toString()
         }
-
     }
 
     package affichage{
         class Affichage{
-            +{static} afficherPlateau()
-            +{static} afficherMain()
+            +{static} afficherPlateau(plateau : Optional[])
+            +{static} afficherMain(main : ArrayList)
         }
-
     }
 }
 
@@ -135,23 +172,31 @@ gameplay.jeu.Joueur ..> factory.CarteFactory : <<use>>
 
 Jeu .> Partie : <<use>>
 
+FonctionPouvoir .> typeCarte.Animal : <<use>>
+FonctionPouvoir .> gameplay.jeu.Joueur : <<use>>
+
 Partie .> Joueur : <<use>>
-Partie .> Animal : <<use>>
-Partie .> CarteFactory : <<use>>
+Partie .> typeCarte.Animal : <<use>>
+Partie .> factory.CarteFactory : <<use>>
 
-Affichage .> typeCarte.Carte : "<<use>>"
-Affichage .> typeCarte.Animal : "<<use>>"
+Affichage .> typeCarte.Carte : <<use>>
+Affichage .> typeCarte.Animal : <<use>>
 
-Animal .> Pouvoir : <<use>>
-
-Carte *--> "1,2" Pouvoir : m_pouvoir
+Animal o--> "0..1" pouvoirs.FonctionPouvoir : m_pouvoir
 
 Robot o--> "1" Joueur : m_other
 
-Joueur *--> "1" typeCarte.Animal : m_pioche\nm_mainJoueur
-Joueur *--> "1" typeCarte.Carte : m_plateau
+Joueur *--> "0..*" typeCarte.Animal : m_pioche\nm_mainJoueur
+Joueur *--> "0..*" typeCarte.Carte : m_plateau
 
-Pioche *--> "0..*" Animal : m_pioche
+Pioche *--> "0..*" typeCarte.Animal : m_pioche
 Pioche o--> "1" Joueur : m_joueur
+
+CarteFactory ..> pouvoirs.Puant : <<instantiate>>
+CarteFactory ..> pouvoirs.NombreusesVies : <<instantiate>>
+CarteFactory ..> pouvoirs.Croissance : <<instantiate>>
+CarteFactory ..> pouvoirs.Coureur : <<instantiate>>
+CarteFactory ..> pouvoirs.ContactMortel : <<instantiate>>
+CarteFactory ..> pouvoirs.PiquesPointues : <<instantiate>>
 
 @enduml

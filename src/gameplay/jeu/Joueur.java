@@ -53,6 +53,7 @@ public class Joueur {
             if (cartePosable) {
                 placerCarte(carte, cellule);
                 m_os -= carte.getOs();
+                return;
             } else {
                 return;
             }
@@ -80,6 +81,13 @@ public class Joueur {
 
             Carte attaquant = m_plateau[i].get();
 
+            if (attaquant.isSacrifiable()){
+                Animal att = (Animal) attaquant;
+                if (att.getPouvoir().isPresent()){
+                    ((Animal) attaquant).getPouvoir().get().onAttaque(att, this, other);
+                }
+            }
+
             if (attaquant.getVolant() || other.m_plateau[i].isEmpty()) {
                 m_scoreJoueur += attaquant.getAttaque();
                 continue;
@@ -87,6 +95,13 @@ public class Joueur {
 
             Carte defenseur = other.m_plateau[i].get();
             attaquant.attaquer(defenseur);
+
+            if (defenseur.isSacrifiable()){
+                Animal animalAdversaire = (Animal) other.m_plateau[i].get();
+                if(animalAdversaire.getPouvoir().isPresent()){
+                    animalAdversaire.getPouvoir().get().onDefense(animalAdversaire, other, this);
+                }
+            }
 
             if (defenseur.getPV() <= 0) {
                 other.m_plateau[i] = Optional.empty();
