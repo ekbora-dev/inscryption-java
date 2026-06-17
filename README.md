@@ -79,7 +79,3 @@ Vérifie que tu lances bien la commande `java -cp out Main` depuis la racine du 
 
 **Erreurs lors de la compilation**
 Assure-toi d'avoir bien Java 11 ou une version plus récente (`java -version`), et que tu es bien dans le dossier racine du projet lors de l'exécution des commandes.
-
-## Licence
-
-Précise ici la licence de ton projet si tu en as une.
